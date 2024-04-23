@@ -78,12 +78,12 @@ create table products
     sku            varchar(100)                      COMMENT '商品コード',
     product_name   varchar(100)   NOT NULL           COMMENT '商品名前',
     description    text                              COMMENT '説明',
-    unit_price     decimal(10, 2) COMMENT 'ユニット価格',
-    stock_quantity int            COMMENT '在庫数量',
-    image          varchar(255)   COMMENT '写真',
-    category_id    bigint         COMMENT 'カテゴリーID',
-    created_at     date           COMMENT '作成日付',
-    updated_at     date           COMMENT '更新日付'
+    unit_price     decimal(10, 2)                    COMMENT 'ユニット価格',
+    stock_quantity int                               COMMENT '在庫数量',
+    image          varchar(255)                      COMMENT '写真',
+    category_id    bigint                            COMMENT 'カテゴリーID',
+    created_at     date                              COMMENT '作成日付',
+    updated_at     date                              COMMENT '更新日付'
 );
 #
 ALTER TABLE products
@@ -111,3 +111,21 @@ END;
 // DELIMITER ;
 
 #orders table
+create table orders(
+    order_id        bigint PRIMARY KEY AUTO_INCREMENT                                      COMMENT '注文ID',
+    serial_number   varchar(100)                                                           COMMENT 'シリアル番号',
+    user_id         bigint                                                        NOT NULL COMMENT 'ユーザーID',
+    total_price     decimal(10, 2)                                                         COMMENT '合計金額',
+    status          enum ('WAITING', 'CONFIRM', 'DELIVERY', 'SUCCESS', 'CANCEL', 'DENIED') COMMENT '注文状態',
+    note            varchar(100)                                                           COMMENT 'ノート',
+    receive_name    varchar(100)                                                           COMMENT '届け先の名前',
+    receive_address varchar(255)                                                           COMMENT '届け先の住所',
+    receive_phone   varchar(15)                                                            COMMENT '届け先の電話番号',
+    created_at      date                                                                   COMMENT '作成日付',
+    received_at     date                                                                   COMMENT '配達予定日'
+);
+# orders foreign key
+ALTER TABLE orders
+    ADD CONSTRAINT fk_orders_user_id
+        FOREIGN KEY (user_id) REFERENCES users (user_id)
+
