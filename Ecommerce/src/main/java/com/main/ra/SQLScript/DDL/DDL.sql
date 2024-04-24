@@ -17,11 +17,11 @@ CREATE TABLE users
     created_at date                      COMMENT '作成日付',
     updated_at date                      COMMENT '更新日付'
 );
-# users CHECKer
+# users checker
 ALTER TABLE users
     ADD CONSTRAINT chk_user_name_length_users CHECK(length(user_name) >= 6);
 ALTER TABLE users
-    ADD CONSTRAINT chk_user_name_fmt_users CHECK(user_name NOT REGEXP '[^a-zA-Z0-9\s]');
+    ADD CONSTRAINT chk_user_name_fmt_users CHECK(user_name NOT REGEXP '[^a-zA-Z0-9_]');
 ALTER TABLE users
     ADD CONSTRAINT chk_email_fmt_users CHECK(email REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+.[a-z]+.[a-z]');
 ALTER TABLE users
