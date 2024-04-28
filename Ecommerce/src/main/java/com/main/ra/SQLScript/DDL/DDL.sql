@@ -51,10 +51,12 @@ CREATE TABLE roles(
 
 # user_role
 CREATE TABLE user_roles(
+    id bigint PRIMARY KEY AUTO_INCREMENT COMMENT 'ユーザー許可ID',
     user_id bigint NOT NULL COMMENT 'ユーザーID',
     role_id bigint NOT NULL COMMENT '許可ID',
-    PRIMARY KEY (user_id, role_id)
+    status bit default 1 COMMENT 'ユーザー許可状態'
 );
+DROP TABLE user_roles;
 # user_role FOREIGN KEY
 ALTER TABLE user_roles
     ADD CONSTRAINT fk_user_roles_role_id

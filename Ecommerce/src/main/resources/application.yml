@@ -1,3 +1,50 @@
+JwtToken:
+    key: "JWT_SECRET_KEY_VU_THANH_TUNG_1721991"
+    expired-time: 7200000
+
+
 spring:
     application:
-        name: Ecommerce
+        name: ecommerce
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: tung@172
+        url: jdbc:mysql://localhost:3306/ecommerce
+    jpa:
+        hibernate:
+            ddl-auto: update
+            naming:
+                implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+                physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        properties:
+            hibernate:
+                current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+                dialect: org.hibernate.dialect.MySQLDialect
+                enable_lazy_load_no_trans: true
+                format_sql: true
+                show_sql: true
+            eclipselink:
+                metadata-source:
+                    properties:
+                        file: constant, message, validator-en
+        show-sql: true
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 50MB
+            max-request-size: 50MB
+server:
+    port: 8088
+logging:
+    level:
+        root: DEBUG
+
+control-api:
+    permission-list:
+        admin:
+            "/api.myservice.com/v1/admin/**"
+        permit-all:
+            "/api.myservice.com/v1/auth/sign-up,/api.myservice.com/v1/auth/sign-in"
+        user:
+

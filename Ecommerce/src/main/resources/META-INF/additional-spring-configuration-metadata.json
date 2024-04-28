@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "control-api.permission-list.permit-all",
+      "type": "java.lang.String",
+      "description": "Description for control-api.permission-list.permit-all."
+    },
+    {
+      "name": "control-api.permission-list.admin",
+      "type": "java.lang.String",
+      "description": "Description for control-api.permission-list.admin."
+    },
+    {
+      "name": "control-api.permission-list.user",
+      "type": "java.lang.String",
+      "description": "Description for control-api.permission-list.user."
+    }
+  ] }
