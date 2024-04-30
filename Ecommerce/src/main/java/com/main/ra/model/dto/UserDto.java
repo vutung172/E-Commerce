@@ -1,10 +1,11 @@
-package com.main.ra.model.dto.response;
+package com.main.ra.model.dto;
 
 import com.main.ra.model.Enum.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -25,5 +26,5 @@ public class UserDto {
     private LocalDate createdAt;
     private LocalDate updatedAt;
     @Enumerated(EnumType.STRING)
-    private List<RoleType> roles;
+    private List<RoleType> roles = new ArrayList<>();
 }

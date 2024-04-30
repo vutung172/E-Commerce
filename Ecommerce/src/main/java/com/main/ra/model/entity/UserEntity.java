@@ -39,8 +39,7 @@ public class UserEntity {
     @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
-    @Generated
-    @ColumnDefault(value = "true")
+    @ColumnDefault(value = "b'1'")
     @Column(name = "status")
     private Boolean status;
 

@@ -1,32 +1,26 @@
 package com.main.ra.service.Impl;
 
-import com.main.ra.advice.ValidatorExceptionHandler;
-import com.main.ra.exception.DatabaseException;
-import com.main.ra.exception.UserInfoException;
+import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.TokenDto;
 import com.main.ra.model.dto.UserDetailAdapter;
 import com.main.ra.model.dto.request.SignInRequest;
 import com.main.ra.model.dto.request.SignUpRequest;
-import com.main.ra.model.dto.response.MessageResponse;
 import com.main.ra.model.dto.response.SignInResponse;
-import com.main.ra.model.dto.response.UserDto;
 import com.main.ra.model.entity.UserEntity;
 import com.main.ra.service.AuthenticationService;
 import com.main.ra.validator.JwtTokenValidator;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.stream.Collectors;
 
 @Service
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService{
     @Autowired
     private JwtTokenValidator tokenValidator;
     @Autowired
@@ -41,12 +35,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (userAdded != null) {
             return true;
         } else {
-            throw new UserInfoException("exception.UserExisted");
+            throw new BaseException("exception.UserExisted",HttpStatus.NOT_FOUND);
         }
     }
 
 
-    public SignInResponse signIn(SignInRequest req) throws UserInfoException {
+    public SignInResponse signIn(SignInRequest req){
         try {
             Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -65,8 +59,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .roles(user.getUser().getRoles().stream().map(r -> r.getRole().getRoleName()).collect(Collectors.toList()))
                     .build();
 
-        } catch (RuntimeException rte) {
-            throw new DatabaseException(rte, "exception.database.UserOrPasswordIncorrect");
+        } catch (RuntimeException re) {
+            throw new BaseException("exception.database.UserOrPasswordIncorrect",HttpStatus.UNAUTHORIZED);
         }
     }
+
 }

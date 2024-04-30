@@ -1,5 +1,6 @@
 package com.main.ra.config;
 
+import com.main.ra.exception.BaseException;
 import com.main.ra.service.Impl.UserServiceImpl;
 import com.main.ra.validator.JwtTokenValidator;
 import jakarta.servlet.FilterChain;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +31,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+    ) throws ServletException, IOException, BaseException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer")) {
             String jwtToken = authHeader.substring(7);
@@ -48,8 +50,11 @@ public class JwtFilterConfig extends OncePerRequestFilter {
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(authenticationToken);
+            } else {
+                throw new BaseException("exception.Jwt.TokenInvalid", HttpStatus.UNAUTHORIZED);
             }
         }
         filterChain.doFilter(request,response);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.main.ra.model.entity;
 
+import com.main.ra.model.Enum.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -27,15 +28,15 @@ public class OrderEntity {
     private String serialNumber;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "total_price", precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private OrderStatus status;
 
     @Size(max = 100)
     @Column(name = "note", length = 100)
@@ -61,5 +62,10 @@ public class OrderEntity {
 
     @OneToMany(mappedBy = "order")
     private Set<OrderDetailEntity> orderDetails = new LinkedHashSet<>();
+
+    @MapsId("userId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private UserEntity user;
 
 }

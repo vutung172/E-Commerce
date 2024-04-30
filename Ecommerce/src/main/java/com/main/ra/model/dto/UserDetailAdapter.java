@@ -1,6 +1,7 @@
 package com.main.ra.model.dto;
 
 import com.main.ra.model.entity.UserEntity;
+import com.main.ra.model.entity.UserRoleEntity;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +22,9 @@ public class UserDetailAdapter implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> roles = new ArrayList<>();
-        user.getRoles().forEach(ur -> roles.add(new SimpleGrantedAuthority(String.valueOf(ur.getRole().getRoleName()))));
+        user.getRoles().stream()
+                .filter(UserRoleEntity::getStatus)
+                .forEach(ur -> roles.add(new SimpleGrantedAuthority(String.valueOf(ur.getRole().getRoleName()))));
         return roles;
     }
 

@@ -1,5 +1,6 @@
 package com.main.ra.config;
 
+import com.main.ra.advice.AuthenticationExceptionHandler;
 import com.main.ra.service.Impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ public class SpringSecurityConfig {
     private final UserServiceImpl userDetailService;
     private final JwtFilterConfig filter;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationExceptionHandler authHandler;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -54,7 +56,7 @@ public class SpringSecurityConfig {
                 .requestMatchers(apiConfig.getADMIN_LIST_API()).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling()
+                .exceptionHandling().authenticationEntryPoint(authHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

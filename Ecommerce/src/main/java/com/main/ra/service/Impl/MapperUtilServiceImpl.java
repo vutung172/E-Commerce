@@ -1,5 +1,7 @@
 package com.main.ra.service.Impl;
 
+import com.main.ra.model.dto.UserDto;
+import com.main.ra.model.entity.UserEntity;
 import com.main.ra.service.MapperUtilService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -28,5 +30,11 @@ public class MapperUtilServiceImpl implements MapperUtilService {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    public UserDto convertUserEntityToUserDto(UserEntity user){
+        UserDto userDto = convertEntityToDTO(user, UserDto.class);
+        user.getRoles().forEach(ur -> userDto.getRoles().add(ur.getRole().getRoleName()));
+        return userDto;
     }
 }

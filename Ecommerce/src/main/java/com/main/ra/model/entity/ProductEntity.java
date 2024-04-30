@@ -39,6 +39,7 @@ public class ProductEntity {
     @Column(name = "unit_price", precision = 10, scale = 2)
     private BigDecimal unitPrice;
 
+    @Size(min = 1, message = "{message.StockQty}")
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
 
@@ -46,15 +47,19 @@ public class ProductEntity {
     @Column(name = "image")
     private String image;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private CategoryEntity category;
+    @Column(name = "category_id")
+    private Long categoryId;
 
     @Column(name = "created_at")
     private LocalDate createdAt;
 
     @Column(name = "updated_at")
     private LocalDate updatedAt;
+
+    @MapsId("categoryId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
 
     @OneToMany(mappedBy = "product")
     private Set<OrderDetailEntity> orderDetails = new LinkedHashSet<>();

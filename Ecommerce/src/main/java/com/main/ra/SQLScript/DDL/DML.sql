@@ -13,4 +13,6 @@ INSERT INTO users(
          '12345',
          '0198984230',
          'akjdfghsdjkfhijsd'
-        )
+        );
+
+SELECT * FROM users WHERE user_name LIKE '%tung%' ESCAPE '\\';

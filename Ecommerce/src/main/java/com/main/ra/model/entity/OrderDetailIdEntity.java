@@ -7,13 +7,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
 @Embeddable
-public class OrderDetailIdEntity implements java.io.Serializable {
+public class OrderDetailIdEntity implements Serializable {
+    @Serial
     private static final long serialVersionUID = 6934092568755304540L;
+
     @NotNull
     @Column(name = "order_id", nullable = false)
     private Long orderId;

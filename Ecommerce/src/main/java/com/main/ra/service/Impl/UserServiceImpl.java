@@ -1,18 +1,21 @@
 package com.main.ra.service.Impl;
 
-import com.main.ra.exception.UserInfoException;
+import com.main.ra.exception.BaseException;
+import com.main.ra.model.Enum.UserStatus;
 import com.main.ra.model.dto.UserDetailAdapter;
+import com.main.ra.model.dto.UserDto;
 import com.main.ra.model.dto.request.SignUpRequest;
-import com.main.ra.model.dto.response.UserDto;
+import com.main.ra.model.dto.request.PageableRequest;
+import com.main.ra.model.dto.response.PageDataResponse;
 import com.main.ra.model.entity.RoleEntity;
 import com.main.ra.model.entity.UserEntity;
 import com.main.ra.repository.UserRepository;
-import com.main.ra.repository.UserRoleRepository;
 import com.main.ra.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,9 +35,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private RoleServiceImpl roleService;
     @Autowired
+    private PageableServiceImpl pageableService;
+    @Autowired
     private MapperUtilServiceImpl mapper;
     @Autowired
     private PasswordEncoder encoder;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -57,18 +63,50 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             req.getRoles().forEach(r -> {
                 RoleEntity role = roleService.findByRoleName(r);
                 if (role != null){
-                    userRoleService.addUserRole(userDB,role);
+                    userRoleService.addUserRole(userDB.getId(),role.getId());
                 }
             });
             return userDB;
         } else if (existedUser != null){
-            throw new UserInfoException("exception.UserExisted");
+            throw new BaseException("exception.UserExisted",HttpStatus.BAD_REQUEST);
         } else {
-            throw  new UserInfoException("exception.PhoneExisted");
+            throw  new BaseException("exception.PhoneExisted",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public UserStatus switchStatus(Long userId){
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user != null){
+            user.setStatus(!user.getStatus());
+            if (userRepository.save(user).getStatus()){
+                return UserStatus.ACTIVE;
+            } else {
+                return UserStatus.BLOCK;
+            }
+        } else {
+            throw  new BaseException("exception.UserNotFound",HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public Page<UserDto> findAllByUserName(String key, PageableRequest pageableRequest){
+        try{
+            String searchKey = "%".concat(key.concat("%")).replace(" ","");
+            return userRepository.findAllByUserNameLikeIgnoreCase(searchKey, pageableRequest)
+                    .map(u -> mapper.convertUserEntityToUserDto(u));
+        }catch (Exception e){
+            throw new BaseException("exception.pageable.PageNotFound",HttpStatus.FORBIDDEN);
         }
     }
 
     public UserEntity findByUsernameAndPassword(String userName, String password){
         return userRepository.findUserEntitiesByUserNameAndPassword(userName,password).orElse(null);
+    }
+
+    public Page<UserDto> findAll(PageableRequest pageableRequest){
+        try{
+            return userRepository.findAll(pageableRequest).map(u -> mapper.convertUserEntityToUserDto(u));
+        }catch (Exception e){
+            throw new BaseException("exception.pageable.PageNotFound",HttpStatus.FORBIDDEN);
+        }
     }
 }

@@ -14,10 +14,18 @@ public class WishListEntity {
     @Column(name = "wish_list_id", nullable = false)
     private Long id;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "product_id")
+    private Long productId;
+
+    @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @MapsId("productId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
