@@ -32,6 +32,16 @@ public class MapperUtilServiceImpl implements MapperUtilService {
         }
     }
 
+    public <D, E> E updateToEntity( D dto, E entity) {
+        try {
+            BeanUtils.copyProperties(dto, entity);
+            return entity;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public UserDto convertUserEntityToUserDto(UserEntity user){
         UserDto userDto = convertEntityToDTO(user, UserDto.class);
         user.getRoles().forEach(ur -> userDto.getRoles().add(ur.getRole().getRoleName()));

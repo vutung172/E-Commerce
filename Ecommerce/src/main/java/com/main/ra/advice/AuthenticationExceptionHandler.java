@@ -18,7 +18,7 @@ import java.io.IOException;
 public class AuthenticationExceptionHandler implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authenticationException) throws IOException, ServletException {
-        if (request.getHeader("Authorization").isEmpty() || response.getStatus() == 401 || response.getStatus() == 403){
+        if (request.getHeader("Authorization") == null || response.getStatus() == 401 || response.getStatus() == 403 || response.getStatus() == 404 ){
             BaseException baseException = new BaseException("exception.AuthenticationFailure",HttpStatus.UNAUTHORIZED);
             response.sendError(baseException.getStatus().value(), baseException.getErrorMessage().getMessage());
         }

@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -13,7 +14,7 @@ import java.util.function.Function;
 @Setter
 @NoArgsConstructor
 public class PageDataResponse<T> {
-    private List<T> data;
+    private List<T> data = new ArrayList<>();
     private Integer totalPages;
     private Integer number;
     private Integer size;

@@ -1,4 +1,4 @@
-package com.main.ra.controller;
+package com.main.ra.controller.common;
 
 import com.main.ra.model.dto.ProductDto;
 import com.main.ra.model.dto.response.DataResponse;

@@ -76,17 +76,18 @@ CREATE TABLE categories(
 # products table
 CREATE TABLE products
 (
-    product_id     bigint PRIMARY KEY AUTO_INCREMENT COMMENT '商品ID',
-    sku            varchar(100)                      COMMENT '商品コード',
-    product_name   varchar(100)   NOT NULL           COMMENT '商品名前',
-    description    text                              COMMENT '説明',
-    unit_price     decimal(10, 2)                    COMMENT 'ユニット価格',
-    stock_quantity int                               COMMENT '在庫数量',
-    image          varchar(255)                      COMMENT '写真',
-    category_id    bigint                            COMMENT 'カテゴリーID',
-    created_at     date                              COMMENT '作成日付',
-    updated_at     date                              COMMENT '更新日付'
+    product_id     bigint PRIMARY KEY AUTO_INCREMENT        COMMENT '商品ID',
+    sku            varchar(100)   UNIQUE DEFAULT (UUID())   COMMENT '商品コード',
+    product_name   varchar(100)   NOT NULL  UNIQUE          COMMENT '商品名前',
+    description    text                                     COMMENT '説明',
+    unit_price     decimal(10, 2)                           COMMENT 'ユニット価格',
+    stock_quantity int                                      COMMENT '在庫数量',
+    image          varchar(255)                             COMMENT '写真',
+    category_id    bigint                                   COMMENT 'カテゴリーID',
+    created_at     date                                     COMMENT '作成日付',
+    updated_at     date                                     COMMENT '更新日付'
 );
+
 #
 ALTER TABLE products
     ADD CONSTRAINT fk_products_category_id

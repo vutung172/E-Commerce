@@ -1,10 +1,14 @@
 package com.main.ra.model.entity;
 
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.UUID;
 
 import java.math.BigDecimal;
@@ -19,11 +23,10 @@ import java.util.Set;
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id")
     private Long id;
 
     @Size(max = 100)
-    @UUID
     @Column(name = "sku", length = 100)
     private String sku;
 
@@ -32,14 +35,13 @@ public class ProductEntity {
     @Column(name = "product_name", nullable = false, length = 100)
     private String productName;
 
-    @Lob
     @Column(name = "description")
     private String description;
 
     @Column(name = "unit_price", precision = 10, scale = 2)
     private BigDecimal unitPrice;
 
-    @Size(min = 1, message = "{message.StockQty}")
+    @Min(value = 1, message = "{message.StockQty}")
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
 

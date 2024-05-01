@@ -16,7 +16,7 @@ public class ProductDto {
     private Long id;
     private String productName;
     private String description;
-    @NumberFormat(pattern = "#,##0.00", style = NumberFormat.Style.CURRENCY)
+    @NumberFormat(style = NumberFormat.Style.NUMBER, pattern = "#,##0.00")
     private BigDecimal unitPrice;
     private String imageUrl;
 }
