@@ -29,8 +29,7 @@ public class CategoryEntity {
     @Column(name = "description")
     private String description;
 
-    @Generated
-    @ColumnDefault("true")
+    @ColumnDefault("b'1")
     @Column(name = "status")
     private Boolean status;
 

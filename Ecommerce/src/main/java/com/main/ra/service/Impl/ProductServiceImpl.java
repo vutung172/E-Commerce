@@ -49,6 +49,16 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    public boolean deleteProduct(Long id){
+        ProductEntity productEntity = productRepository.findById(id).orElse(null);
+        if (productEntity != null){
+            productRepository.delete(productEntity);
+            return true;
+        } else {
+            throw new BaseException("exception.ProductNotFound",HttpStatus.NOT_FOUND);
+        }
+    }
+
     public ProductDto findById(Long id){
         ProductEntity product = productRepository.findById(id).orElse(null);
         if (product != null){

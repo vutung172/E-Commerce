@@ -1,13 +1,28 @@
 package com.main.ra.service.Impl;
 
+import com.main.ra.exception.BaseException;
+import com.main.ra.model.dto.CartDto;
 import com.main.ra.model.dto.UserDto;
+import com.main.ra.model.dto.request.UserRequest;
+import com.main.ra.model.entity.ProductEntity;
+import com.main.ra.model.entity.ShoppingCartEntity;
 import com.main.ra.model.entity.UserEntity;
 import com.main.ra.service.MapperUtilService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MapperUtilServiceImpl implements MapperUtilService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapperUtilServiceImpl.class);
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public <E, D> D convertEntityToDTO(E entity, Class<D> dtoClass) {
         try {
             D dto = dtoClass.getDeclaredConstructor().newInstance();
@@ -42,9 +57,21 @@ public class MapperUtilServiceImpl implements MapperUtilService {
         }
     }
 
-    public UserDto convertUserEntityToUserDto(UserEntity user){
-        UserDto userDto = convertEntityToDTO(user, UserDto.class);
-        user.getRoles().forEach(ur -> userDto.getRoles().add(ur.getRole().getRoleName()));
-        return userDto;
+    public CartDto convertCartEntityToCartDto(ShoppingCartEntity cartEntity){
+        ProductEntity product = entityManager.find(ProductEntity.class,cartEntity.getProductId());
+        if (product != null) {
+            return CartDto.builder()
+                    .id(cartEntity.getId())
+                    .productName(product.getProductName())
+                    .unitPrice(product.getUnitPrice())
+                    .quantity(cartEntity.getOrderQuantity())
+                    .build();
+        } else {
+            throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);
+        }
     }
+//    public UserEntity convertUserRequestToUserEntity(UserRequest request){
+//        UserEntity userEntity = convertDTOToEntity(request, UserEntity.class);
+//
+//    }
 }

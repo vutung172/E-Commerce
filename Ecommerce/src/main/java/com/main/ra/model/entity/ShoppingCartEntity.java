@@ -1,12 +1,15 @@
 package com.main.ra.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "shopping_carts",schema = "ecommerce")
 public class ShoppingCartEntity {
@@ -21,17 +24,17 @@ public class ShoppingCartEntity {
     @Column(name = "product_id")
     private Long productId;
 
-    @Size(min = 1, message = "{must at least 1}")
+    @Min(value = 1, message = "{must at least 1}")
     @Column(name = "order_quantity")
     private Integer orderQuantity;
 
     @MapsId("productId")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = ProductEntity.class)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
 
     @MapsId("userId")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = UserEntity.class)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 }

@@ -14,17 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private Long id;
     private String userName;
-    private String email;
     private String fullName;
-    private Boolean status;
-    private String password;
-    private String avatar;
+    private String email;
     private String phone;
     private String address;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
-    @Enumerated(EnumType.STRING)
-    private List<RoleType> roles = new ArrayList<>();
+    private String avatar;
 }

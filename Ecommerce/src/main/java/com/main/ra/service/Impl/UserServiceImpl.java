@@ -2,11 +2,14 @@ package com.main.ra.service.Impl;
 
 import com.main.ra.exception.BaseException;
 import com.main.ra.model.Enum.UserStatus;
+import com.main.ra.model.dto.ProductDto;
 import com.main.ra.model.dto.UserDetailAdapter;
 import com.main.ra.model.dto.UserDto;
 import com.main.ra.model.dto.request.SignUpRequest;
 import com.main.ra.model.dto.request.PageableRequest;
+import com.main.ra.model.dto.request.UserRequest;
 import com.main.ra.model.dto.response.PageDataResponse;
+import com.main.ra.model.entity.ProductEntity;
 import com.main.ra.model.entity.RoleEntity;
 import com.main.ra.model.entity.UserEntity;
 import com.main.ra.repository.UserRepository;
@@ -40,6 +43,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private MapperUtilServiceImpl mapper;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private FileServiceImpl fileService;
 
 
     @Override
@@ -74,6 +79,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    public UserEntity update(Long userId, UserRequest request){
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user != null){
+            String fileName = fileService.save(userId,request.getFile());
+            UserEntity updatedUser= mapper.updateToEntity(request,user);
+            updatedUser.setAvatar(fileName);
+            return userRepository.save(updatedUser);
+        }else {
+            throw new BaseException("exception.UserNotFound", HttpStatus.NOT_FOUND);
+        }
+    }
+
     public UserStatus switchStatus(Long userId){
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user != null){
@@ -92,7 +109,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try{
             String searchKey = "%".concat(key.concat("%")).replace(" ","");
             return userRepository.findAllByUserNameLikeIgnoreCase(searchKey, pageableRequest)
-                    .map(u -> mapper.convertUserEntityToUserDto(u));
+                    .map(u -> mapper.convertEntityToDTO(u, UserDto.class));
         }catch (Exception e){
             throw new BaseException("exception.pageable.PageNotFound",HttpStatus.FORBIDDEN);
         }
@@ -102,9 +119,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findUserEntitiesByUserNameAndPassword(userName,password).orElse(null);
     }
 
+    public UserEntity findById(Long userId){
+        return userRepository.findById(userId).orElse(null);
+    }
+
     public Page<UserDto> findAll(PageableRequest pageableRequest){
         try{
-            return userRepository.findAll(pageableRequest).map(u -> mapper.convertUserEntityToUserDto(u));
+            return userRepository.findAll(pageableRequest).map(u -> mapper.convertEntityToDTO(u, UserDto.class));
         }catch (Exception e){
             throw new BaseException("exception.pageable.PageNotFound",HttpStatus.FORBIDDEN);
         }

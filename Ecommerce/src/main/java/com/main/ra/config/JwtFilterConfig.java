@@ -50,9 +50,10 @@ public class JwtFilterConfig extends OncePerRequestFilter {
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(authenticationToken);
-            } else {
-                throw new BaseException("exception.Jwt.TokenInvalid", HttpStatus.UNAUTHORIZED);
             }
+            /*else {
+                throw new AuthenticationExceptionHandler
+            }*/
         }
         filterChain.doFilter(request,response);
     }

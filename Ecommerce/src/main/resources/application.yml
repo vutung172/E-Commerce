@@ -34,6 +34,7 @@ spring:
             enabled: true
             max-file-size: 50MB
             max-request-size: 50MB
+            file-size-threshold: 10MB
 server:
     port: 8088
 logging:

@@ -1,15 +1,19 @@
 package com.main.ra.controller.admin;
 
+import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.ProductDto;
 import com.main.ra.model.dto.request.ProductRequest;
 import com.main.ra.model.dto.response.DataResponse;
+import com.main.ra.model.dto.response.MessageResponse;
 import com.main.ra.model.dto.response.PageDataResponse;
 import com.main.ra.model.dto.response.ProductResponse;
 import com.main.ra.service.Impl.PageableServiceImpl;
 import com.main.ra.service.Impl.ProductServiceImpl;
+import com.main.ra.util.MessageLoader;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +26,8 @@ public class AdminProductApi {
     private ProductServiceImpl productService;
     @Autowired
     private PageableServiceImpl pageableService;
+    @Autowired
+    private MessageLoader loader;
 
     @PostMapping
     public ResponseEntity addNewProduct(
@@ -44,6 +50,17 @@ public class AdminProductApi {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteProduct(
+        @PathVariable Long id
+    ){
+        if (productService.deleteProduct(id)){
+            return ResponseEntity.ok(new MessageResponse(loader.getMessage("success.DeleteProduct")));
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
     @GetMapping
     public ResponseEntity findAll(
             @RequestParam Integer page,
@@ -64,5 +81,6 @@ public class AdminProductApi {
         response.getData().add(productDto);
         return ResponseEntity.ok(response);
     }
+
 
 }

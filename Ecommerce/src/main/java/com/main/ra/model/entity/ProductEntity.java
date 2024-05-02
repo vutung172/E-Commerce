@@ -19,6 +19,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NamedEntityGraph(name = "graph.Product.cart", attributeNodes = {
+        @NamedAttributeNode(value = "shoppingCarts")
+})
 @Table(name = "products",schema = "ecommerce")
 public class ProductEntity {
     @Id
