@@ -70,8 +70,4 @@ public class MapperUtilServiceImpl implements MapperUtilService {
             throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);
         }
     }
-//    public UserEntity convertUserRequestToUserEntity(UserRequest request){
-//        UserEntity userEntity = convertDTOToEntity(request, UserEntity.class);
-//
-//    }
 }

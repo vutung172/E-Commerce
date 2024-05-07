@@ -2,6 +2,7 @@ package com.main.ra.model.dto;
 
 import com.main.ra.model.entity.UserEntity;
 import com.main.ra.model.entity.UserRoleEntity;
+import com.main.ra.validator.JwtTokenValidator;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserDetailAdapter implements UserDetails {
     private UserEntity user;
+    private boolean NonExpiredStatus;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> roles = new ArrayList<>();

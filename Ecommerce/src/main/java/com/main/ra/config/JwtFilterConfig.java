@@ -1,6 +1,8 @@
 package com.main.ra.config;
 
 import com.main.ra.exception.BaseException;
+import com.main.ra.exception.JwtFilterException;
+import com.main.ra.model.dto.UserDetailAdapter;
 import com.main.ra.service.Impl.UserServiceImpl;
 import com.main.ra.validator.JwtTokenValidator;
 import jakarta.servlet.FilterChain;
@@ -31,14 +33,15 @@ public class JwtFilterConfig extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
-    ) throws ServletException, IOException, BaseException {
+    ) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer")) {
             String jwtToken = authHeader.substring(7);
-            if (tokenValidator.validateToken(jwtToken)) {
+            if (tokenValidator.isJwtToken(jwtToken)) {
                 String userName = tokenValidator.getUserName(jwtToken);
-                UserDetails userDetails = userService
+                UserDetailAdapter userDetails = userService
                         .loadUserByUsername(userName);
+                userDetails.setNonExpiredStatus(tokenValidator.isNonExpiredToken(jwtToken));
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -51,9 +54,6 @@ public class JwtFilterConfig extends OncePerRequestFilter {
                         .getContext()
                         .setAuthentication(authenticationToken);
             }
-            /*else {
-                throw new AuthenticationExceptionHandler
-            }*/
         }
         filterChain.doFilter(request,response);
     }

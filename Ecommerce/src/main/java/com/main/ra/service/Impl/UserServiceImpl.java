@@ -2,14 +2,11 @@ package com.main.ra.service.Impl;
 
 import com.main.ra.exception.BaseException;
 import com.main.ra.model.Enum.UserStatus;
-import com.main.ra.model.dto.ProductDto;
 import com.main.ra.model.dto.UserDetailAdapter;
 import com.main.ra.model.dto.UserDto;
 import com.main.ra.model.dto.request.SignUpRequest;
 import com.main.ra.model.dto.request.PageableRequest;
 import com.main.ra.model.dto.request.UserRequest;
-import com.main.ra.model.dto.response.PageDataResponse;
-import com.main.ra.model.entity.ProductEntity;
 import com.main.ra.model.entity.RoleEntity;
 import com.main.ra.model.entity.UserEntity;
 import com.main.ra.repository.UserRepository;
@@ -19,7 +16,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +44,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetailAdapter loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findUserEntitiesByUserName(username).orElse(null);
         if (user != null){
             UserDetailAdapter userAdapter = new UserDetailAdapter();

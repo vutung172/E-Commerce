@@ -4,11 +4,15 @@ package com.main.ra.controller.user;
 import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.CartDto;
 import com.main.ra.model.dto.CategoryDto;
+import com.main.ra.model.dto.OrderDto;
+import com.main.ra.model.dto.request.AddressRequest;
 import com.main.ra.model.dto.request.PayloadRequest;
 import com.main.ra.model.dto.response.DataResponse;
 import com.main.ra.model.dto.response.MessageResponse;
+import com.main.ra.model.entity.OrderEntity;
 import com.main.ra.model.entity.ShoppingCartEntity;
 import com.main.ra.service.Impl.MapperUtilServiceImpl;
+import com.main.ra.service.Impl.OrderServiceImpl;
 import com.main.ra.service.Impl.ShoppingCartServiceImpl;
 import com.main.ra.util.MessageLoader;
 import org.hibernate.Hibernate;
@@ -26,6 +30,8 @@ public class ShoppingCartApi {
     @Autowired
     private ShoppingCartServiceImpl cartService;
     @Autowired
+    private OrderServiceImpl orderService;
+    @Autowired
     private MapperUtilServiceImpl mapper;
     @Autowired
     private MessageLoader loader;
@@ -34,7 +40,10 @@ public class ShoppingCartApi {
     public ResponseEntity listAllProductsInCart(
             @RequestHeader Long userId
     ){
-        List<CartDto> cartDtoList = cartService.findByUserId(userId);
+        List<ShoppingCartEntity> cartEntities = cartService.findByUserId(userId);
+        List<CartDto> cartDtoList = cartEntities.stream()
+                .map(ce -> mapper.convertCartEntityToCartDto(ce))
+                .toList();
         DataResponse<CartDto> cart = new DataResponse<>(cartDtoList);
         return ResponseEntity.ok(cart);
     }
@@ -94,6 +103,22 @@ public class ShoppingCartApi {
             return ResponseEntity.ok(new MessageResponse(loader.getMessage("success.DeleteCart")));
         } else {
             throw new BaseException("failure.DeleteProductFromCart", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity checkout(
+            @RequestHeader Long userId,
+            @RequestBody AddressRequest request
+    ){
+        List<ShoppingCartEntity> cartEntities = cartService.findByUserId(userId);
+        OrderEntity order = orderService.checkoutAllInCart(userId, request.getAddressId(), cartEntities);
+        OrderEntity order1 = orderService.findByOrderId(order.getId());
+        if (order1 != null){
+            OrderDto orderDto = mapper.convertEntityToDTO(order1, OrderDto.class);
+            return ResponseEntity.ok(new DataResponse<>(Collections.singletonList(orderDto)));
+        } else {
+            throw new BaseException("exception.OrderCreatedFailure",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

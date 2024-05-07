@@ -37,13 +37,29 @@ public class JwtTokenValidator {
         return userName;
     }
 
-    public boolean validateToken(String token){
+    public boolean isJwtToken(String token){
         try{
             Jwts
                     .parser()
                     .setSigningKey(generateKey(JWT_KEY))
                     .parseClaimsJws(token);
             return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean isNonExpiredToken(String token){
+        try{
+            if (isJwtToken(token)){
+                long nonExpired = Jwts
+                        .parser()
+                        .setSigningKey(generateKey(JWT_KEY))
+                        .parseClaimsJws(token).getBody().getExpiration().getTime();
+                return nonExpired == EXPIRED;
+            } else {
+                return false;
+            }
         }catch (Exception e){
             return false;
         }

@@ -2,10 +2,7 @@ package com.main.ra.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.Generated;
@@ -16,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
 @Entity
@@ -66,18 +64,18 @@ public class UserEntity {
     private LocalDate updatedAt;
 
     @OneToMany(mappedBy = "user")
-    private List<AddressEntity> addresses = new ArrayList<>();
+    private List<AddressEntity> addresses;
 
     @OneToMany(mappedBy = "user")
-    private List<OrderEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders;
 
     @OneToMany(mappedBy = "user")
-    private List<ShoppingCartEntity> shoppingCarts = new ArrayList<>();
+    private List<ShoppingCartEntity> shoppingCarts;
 
     @OneToMany(mappedBy = "user")
-    private List<UserRoleEntity> roles = new ArrayList<>();
+    private List<UserRoleEntity> roles;
 
     @OneToMany(mappedBy = "user")
-    private List<WishListEntity> wishLists = new ArrayList<>();
+    private List<WishListEntity> wishLists;
 
 }

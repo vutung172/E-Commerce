@@ -2,8 +2,11 @@ package com.main.ra.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
@@ -13,15 +16,18 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderDetailIdEntity implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 6934092568755304540L;
+    /*@Serial
+    private static final long serialVersionUID = 6934092568755304540L;*/
 
+    @Id
     @NotNull
     @Column(name = "order_id", nullable = false)
     private Long orderId;
 
+    @Id
     @NotNull
     @Column(name = "product_id", nullable = false)
     private Long productId;

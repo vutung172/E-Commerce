@@ -39,7 +39,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         }
     }
 
-
     public SignInResponse signIn(SignInRequest req){
         try {
             Authentication auth = authManager.authenticate(
@@ -63,5 +62,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             throw new BaseException("exception.database.UserOrPasswordIncorrect",HttpStatus.UNAUTHORIZED);
         }
     }
+
 
 }

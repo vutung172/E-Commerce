@@ -16,6 +16,6 @@ public class CartDto {
     private Long id;
     private String productName;
     @NumberFormat(style = NumberFormat.Style.NUMBER, pattern = "#,##0.00")
-    private BigDecimal unitPrice;
+    private Double unitPrice;
     private Integer quantity;
 }

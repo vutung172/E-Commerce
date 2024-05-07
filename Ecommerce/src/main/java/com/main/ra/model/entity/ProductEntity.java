@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.UUID;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -41,8 +43,9 @@ public class ProductEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "unit_price", precision = 10, scale = 2)
-    private BigDecimal unitPrice;
+    @NumberFormat(pattern = "#,##0.00",style = NumberFormat.Style.NUMBER)
+    @Column(name = "unit_price")
+    private Double unitPrice;
 
     @Min(value = 1, message = "{message.StockQty}")
     @Column(name = "stock_quantity")
@@ -55,9 +58,11 @@ public class ProductEntity {
     @Column(name = "category_id")
     private Long categoryId;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
     @Column(name = "created_at")
     private LocalDate createdAt;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 

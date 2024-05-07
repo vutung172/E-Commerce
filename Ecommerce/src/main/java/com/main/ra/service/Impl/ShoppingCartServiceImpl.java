@@ -35,8 +35,8 @@ public class ShoppingCartServiceImpl implements BaseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCartEntity.class);
 
-    public List<CartDto> findByUserId(Long id) {
-        return cartRepository.findAllByUserId(id).stream().map(ce -> mapper.convertCartEntityToCartDto(ce)).toList();
+    public List<ShoppingCartEntity> findByUserId(Long id) {
+        return cartRepository.findAllByUserId(id);
     }
 
 

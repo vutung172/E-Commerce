@@ -4,18 +4,28 @@ import com.main.ra.model.Enum.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.id.IdentifierGenerator;
+import org.hibernate.id.UUIDGenerator;
+import org.hibernate.id.uuid.UuidGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
+import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
+@Builder
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "orders",schema = "ecommerce")
 public class OrderEntity {
     @Id
@@ -23,16 +33,16 @@ public class OrderEntity {
     @Column(name = "order_id", nullable = false)
     private Long id;
 
-    @Size(max = 100)
-    @Column(name = "serial_number", length = 100)
-    private String serialNumber;
+    @Column(name = "serial_number", length = 32, insertable = false)
+    private UUID serialNumber;
 
     @NotNull
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "total_price", precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    @NumberFormat(pattern = "#,##0.00",style = NumberFormat.Style.NUMBER)
+    @Column(name = "total_price")
+    private Double totalPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -54,14 +64,14 @@ public class OrderEntity {
     @Column(name = "receive_phone", length = 15)
     private String receivePhone;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at",insertable = false, updatable = false)
     private LocalDate createdAt;
 
-    @Column(name = "received_at")
+    @Column(name = "received_at",insertable = false, updatable = false)
     private LocalDate receivedAt;
 
     @OneToMany(mappedBy = "order")
-    private Set<OrderDetailEntity> orderDetails = new LinkedHashSet<>();
+    private Set<OrderDetailEntity> orderDetails;
 
     @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

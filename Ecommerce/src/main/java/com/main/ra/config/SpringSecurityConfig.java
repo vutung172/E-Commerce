@@ -3,6 +3,7 @@ package com.main.ra.config;
 import com.main.ra.advice.AuthenticationExceptionHandler;
 import com.main.ra.service.Impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

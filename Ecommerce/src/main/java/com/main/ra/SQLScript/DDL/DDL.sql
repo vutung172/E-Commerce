@@ -77,7 +77,7 @@ CREATE TABLE categories(
 CREATE TABLE products
 (
     product_id     bigint PRIMARY KEY AUTO_INCREMENT        COMMENT '商品ID',
-    sku            varchar(100)   UNIQUE DEFAULT (UUID())   COMMENT '商品コード',
+    sku            varchar(100)   UNIQUE DEFAULT (uuid())   COMMENT '商品コード',
     product_name   varchar(100)   NOT NULL  UNIQUE          COMMENT '商品名前',
     description    text                                     COMMENT '説明',
     unit_price     decimal(10, 2)                           COMMENT 'ユニット価格',
@@ -142,12 +142,13 @@ END;
 // DELIMITER ;
 
 DELIMITER //
-CREATE TRIGGER tgr_updated_date_product_datestamp
+CREATE TRIGGER tgr_received_date_order_datestamp
     BEFORE INSERT ON orders FOR EACH ROW
 BEGIN
     SET NEW.received_at = DATE_ADD(CURRENT_DATE, INTERVAL 4 DAY);
 END;
 // DELIMITER ;
+DROP TRIGGER tgr_received_date_order_datestamp;
 
 # order_details table
 CREATE TABLE order_details(
