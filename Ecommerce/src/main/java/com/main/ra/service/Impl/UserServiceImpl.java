@@ -14,6 +14,7 @@ import com.main.ra.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,11 +23,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @NoArgsConstructor
 @AllArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
+    @Value("${upload.User.location}")
+    private String uploadFileLocation;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -78,7 +83,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserEntity update(Long userId, UserRequest request){
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user != null){
-            String fileName = fileService.save(userId,request.getFile());
+            String fileLocation = uploadFileLocation.concat("/userId_"+userId+"/"+ LocalDate.now());
+            String fileName = fileService.save(fileLocation,request.getFile());
             UserEntity updatedUser= mapper.updateToEntity(request,user);
             updatedUser.setAvatar(fileName);
             return userRepository.save(updatedUser);

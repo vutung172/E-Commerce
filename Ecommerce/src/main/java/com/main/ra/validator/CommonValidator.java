@@ -3,6 +3,7 @@ package com.main.ra.validator;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,5 +20,15 @@ public class CommonValidator {
         });
         return fails;
     }
+
+    public Map<String, String> confirmPassword(BindingResult result){
+        Map<String,String> fails = new HashMap<>();
+        List<ObjectError> errors = result.getAllErrors();
+        errors.forEach(e -> {
+            fails.put(e.getCode(), e.getDefaultMessage());
+        });
+        return fails;
+    }
+
 
 }

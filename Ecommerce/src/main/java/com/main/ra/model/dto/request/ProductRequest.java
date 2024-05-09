@@ -5,9 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.format.annotation.NumberFormat;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.math.BigDecimal;
 
 @Builder
 @Getter
@@ -21,10 +20,10 @@ public class ProductRequest {
     private String description;
     @Min(value = 0,message = "{message.Min-Price}")
     @NumberFormat(pattern = "#,##0.00", style = NumberFormat.Style.NUMBER)
-    private BigDecimal unitPrice;
+    private Double unitPrice;
     @Min(value = 1, message = "{message.Min-Qty}")
     @NumberFormat(pattern = "#,##0",style = NumberFormat.Style.NUMBER)
     private Integer stockQuantity;
-    private File imageUrl;
+    private MultipartFile image;
     private Long categoryId;
 }

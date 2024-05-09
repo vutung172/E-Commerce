@@ -9,6 +9,7 @@ import com.main.ra.model.entity.ProductEntity;
 import com.main.ra.repository.ProductRepository;
 import com.main.ra.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,12 @@ import java.util.*;
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
+    @Value("${upload.Product.location}")
+    private String fileUploadLocation;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private FileServiceImpl fileService;
     @Autowired
     private MapperUtilServiceImpl mapper;
     @Autowired
@@ -29,8 +34,11 @@ public class ProductServiceImpl implements ProductService {
 
 
     public ProductDto addProduct(ProductRequest request) {
+        String fileLocation = fileUploadLocation.concat("/CategoryId_"+request.getCategoryId()+"/"+request.getProductName());
         if (productRepository.findProductEntitiesByProductName(request.getProductName()) == null) {
+            String fileName = fileService.save(fileLocation,request.getImage());
             ProductEntity product = mapper.convertDTOToEntity(request, ProductEntity.class);
+            product.setImage(fileName);
             ProductEntity productDB = productRepository.save(product);
             System.out.println(productDB.getSku());
             return mapper.convertEntityToDTO(productDB, ProductDto.class);
@@ -39,9 +47,12 @@ public class ProductServiceImpl implements ProductService {
         }
     }
     public ProductDto updateProduct(Long id, ProductRequest request){
+        String fileLocation = fileUploadLocation.concat("/CategoryId_"+request.getCategoryId()+"/"+request.getProductName());
         ProductEntity product = productRepository.findById(id).orElse(null);
         if (product != null){
+            String fileName = fileService.save(fileLocation,request.getImage());
             ProductEntity updatedProduct = mapper.updateToEntity(request,product);
+            updatedProduct.setImage(fileName);
             ProductEntity productDB = productRepository.save(updatedProduct);
             return mapper.convertEntityToDTO(productDB, ProductDto.class);
         }else {

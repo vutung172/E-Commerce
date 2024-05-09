@@ -13,9 +13,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api.myservice.com/v1/admin/products")
@@ -28,21 +30,25 @@ public class AdminProductApi {
     @Autowired
     private MessageLoader loader;
 
-    @PostMapping
+    @PostMapping(consumes = {"multipart/form-data","application/*", MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity addNewProduct(
-            @RequestBody @Valid ProductRequest request
+            @RequestPart@Valid ProductRequest request,
+            @RequestPart("file") MultipartFile file
     ){
+        request.setImage(file);
         ProductDto product = productService.addProduct(request);
         ProductResponse<ProductDto> data = new ProductResponse<>();
         data.getProducts().add(product);
         return ResponseEntity.ok(data);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}",consumes = {"multipart/form-data","application/*",MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity updateProduct(
             @PathVariable Long id,
-            @RequestBody @Valid ProductRequest request
+            @RequestPart @Valid ProductRequest request,
+            @RequestPart("file") MultipartFile file
     ){
+        request.setImage(file);
         ProductDto productDto = productService.updateProduct(id,request);
         DataResponse<ProductDto> response = new DataResponse<>();
         response.getData().add(productDto);

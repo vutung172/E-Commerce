@@ -33,7 +33,7 @@ public class OrderEntity {
     @Column(name = "order_id", nullable = false)
     private Long id;
 
-    @Column(name = "serial_number", length = 32, insertable = false)
+    @Column(name = "serial_number", length = 100, insertable = false, updatable = false)
     private UUID serialNumber;
 
     @NotNull
@@ -64,10 +64,12 @@ public class OrderEntity {
     @Column(name = "receive_phone", length = 15)
     private String receivePhone;
 
-    @Column(name = "created_at",insertable = false, updatable = false)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
+    @Column(name = "created_at",insertable = false,updatable = false)
     private LocalDate createdAt;
 
-    @Column(name = "received_at",insertable = false, updatable = false)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
+    @Column(name = "received_at",insertable = false,updatable = false)
     private LocalDate receivedAt;
 
     @OneToMany(mappedBy = "order")

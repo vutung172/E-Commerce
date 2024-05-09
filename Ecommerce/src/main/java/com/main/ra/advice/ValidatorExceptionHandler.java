@@ -22,6 +22,9 @@ public class ValidatorExceptionHandler {
     public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex) {
         BindingResult result = ex.getBindingResult();
         Map<String, String> validated =  commonValidator.validate(result);
+        Map<String,String> confirmPassword = commonValidator.confirmPassword(result);
+        validated.putAll(confirmPassword);
         return new ResponseEntity<>(validated, HttpStatus.BAD_REQUEST);
     }
+
 }

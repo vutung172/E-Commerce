@@ -1,26 +1,26 @@
 package com.main.ra.model.dto.request;
 
 import com.main.ra.model.Enum.RoleType;
+import com.main.ra.validator.PasswordConfirm;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@PasswordConfirm.List(
+        @PasswordConfirm(field = "confirmPassword", fieldConfirm = "password", message = "Mat khai khong dung")
+)
 public class SignUpRequest {
-    @Length(min = 6, message = "more than 6 characters")
-    @Length(max = 100, message = "less than 100 characters")
+    @Length(min = 6, message = "{message.Min-Length-6}")
+    @Length(max = 100, message = "{message.Max-Length-100}")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "{message.UserNameFmt}")
     @NotNull(message = "{message.NotNull}")
     private String userName;
@@ -41,6 +41,7 @@ public class SignUpRequest {
 
     @Size(max = 255)
     @NotNull(message = "{message.NotNull}")
+    @PasswordConfirm.ConfirmField
     private String confirmPassword;
 
     @Size(max = 255)
@@ -56,9 +57,4 @@ public class SignUpRequest {
 
     @Enumerated(EnumType.STRING)
     List<RoleType> roles;
-
-    @AssertTrue(message = "{EX-03-003}")
-    public boolean confirmPassword(){
-        return password.equals(confirmPassword);
-    }
 }

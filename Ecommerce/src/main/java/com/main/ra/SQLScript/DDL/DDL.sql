@@ -138,17 +138,11 @@ CREATE TRIGGER tgr_created_date_order_datestamp
     BEFORE INSERT ON orders FOR EACH ROW
 BEGIN
     SET NEW.created_at = CURRENT_DATE;
-END;
-// DELIMITER ;
-
-DELIMITER //
-CREATE TRIGGER tgr_received_date_order_datestamp
-    BEFORE INSERT ON orders FOR EACH ROW
-BEGIN
     SET NEW.received_at = DATE_ADD(CURRENT_DATE, INTERVAL 4 DAY);
 END;
 // DELIMITER ;
-DROP TRIGGER tgr_received_date_order_datestamp;
+
+DROP TRIGGER tgr_created_date_order_datestamp;
 
 # order_details table
 CREATE TABLE order_details(

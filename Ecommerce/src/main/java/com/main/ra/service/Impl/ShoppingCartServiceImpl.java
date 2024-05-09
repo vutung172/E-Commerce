@@ -1,8 +1,6 @@
 package com.main.ra.service.Impl;
 
 import com.main.ra.exception.BaseException;
-import com.main.ra.model.dto.CartDto;
-import com.main.ra.model.dto.response.DataResponse;
 import com.main.ra.model.entity.ProductEntity;
 import com.main.ra.model.entity.ShoppingCartEntity;
 import com.main.ra.model.entity.UserEntity;
@@ -10,11 +8,9 @@ import com.main.ra.repository.ProductRepository;
 import com.main.ra.repository.ShoppingCartRepository;
 import com.main.ra.repository.UserRepository;
 import com.main.ra.service.BaseService;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +36,7 @@ public class ShoppingCartServiceImpl implements BaseService {
     }
 
 
-    public ShoppingCartEntity addToCart(Long userId, Long productId, Integer quantity) {
+    public ShoppingCartEntity add(Long userId, Long productId, Integer quantity) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             ProductEntity productEntity = productRepository.findById(productId).orElse(null);

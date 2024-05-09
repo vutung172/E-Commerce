@@ -3,6 +3,7 @@ package com.main.ra.model.dto;
 import com.main.ra.model.Enum.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.time.LocalDate;
@@ -18,6 +19,8 @@ public class OrderDto {
     private String receiveName;
     private String receiveAddress;
     private String receivePhone;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
     private LocalDate createdAt;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
     private LocalDate receivedAt;
 }

@@ -30,9 +30,9 @@ public class FileServiceImpl {
         }
     }
 
-    public String save(Long userId,MultipartFile file) {
+    public String save(String fileLocation,MultipartFile file) {
         try {
-            Path user = Paths.get(root+"/userId_"+userId+"/"+LocalDate.now());
+            Path user = Paths.get(root+fileLocation);
             Files.createDirectories(user);
             Files.copy(file.getInputStream(), user.resolve(Objects.requireNonNull(file.getOriginalFilename())), StandardCopyOption.REPLACE_EXISTING);
             return file.getOriginalFilename();

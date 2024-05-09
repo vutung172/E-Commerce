@@ -56,5 +56,4 @@ public class AccountApi {
         return ResponseEntity.ok(new DataResponse<>(Collections.singletonList(userDto)));
     }
 
-
 }

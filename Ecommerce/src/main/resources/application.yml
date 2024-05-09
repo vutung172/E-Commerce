@@ -41,11 +41,9 @@ logging:
     level:
         root: DEBUG
 
-control-api:
-    permission-list:
-        admin:
-            "/api.myservice.com/v1/admin/**"
-        permit-all:
-            "/api.myservice.com/v1/auth/sign-up,/api.myservice.com/v1/auth/sign-in"
-        user:
 
+upload:
+    User:
+        location: /Users
+    Product:
+        location: /Products

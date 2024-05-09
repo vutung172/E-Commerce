@@ -3,7 +3,6 @@ package com.main.ra.controller.user;
 
 import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.CartDto;
-import com.main.ra.model.dto.CategoryDto;
 import com.main.ra.model.dto.OrderDto;
 import com.main.ra.model.dto.request.AddressRequest;
 import com.main.ra.model.dto.request.PayloadRequest;
@@ -15,7 +14,6 @@ import com.main.ra.service.Impl.MapperUtilServiceImpl;
 import com.main.ra.service.Impl.OrderServiceImpl;
 import com.main.ra.service.Impl.ShoppingCartServiceImpl;
 import com.main.ra.util.MessageLoader;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +51,7 @@ public class ShoppingCartApi {
             @RequestHeader Long userId,
             @RequestBody PayloadRequest<String,String> payload
             ){
-        ShoppingCartEntity cartEntity = cartService.addToCart(userId,
+        ShoppingCartEntity cartEntity = cartService.add(userId,
                 Long.valueOf(payload.getPayload().get("productId")),
                 Integer.valueOf(payload.getPayload().get("quantity")));
         if (cartEntity != null){
@@ -71,7 +69,7 @@ public class ShoppingCartApi {
             @PathVariable Long productId,
             @RequestBody PayloadRequest<String,String> payload
     ){
-        ShoppingCartEntity cart = cartService.addToCart(userId,
+        ShoppingCartEntity cart = cartService.add(userId,
                 productId,
                 Integer.valueOf(payload.getPayload().get("quantity")));
         if (cart != null){
