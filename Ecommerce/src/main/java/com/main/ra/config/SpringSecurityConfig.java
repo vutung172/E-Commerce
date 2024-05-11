@@ -49,8 +49,7 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf()
+        http.csrf()
                 .disable()
                 .authorizeRequests()
                 .requestMatchers(apiConfig.getWHITE_LIST_API()).permitAll()

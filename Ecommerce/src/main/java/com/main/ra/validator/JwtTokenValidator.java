@@ -56,7 +56,7 @@ public class JwtTokenValidator {
                         .parser()
                         .setSigningKey(generateKey(JWT_KEY))
                         .parseClaimsJws(token).getBody().getExpiration().getTime();
-                return nonExpired == EXPIRED;
+                return nonExpired == EXPIRED || nonExpired < EXPIRED;
             } else {
                 return false;
             }

@@ -45,6 +45,11 @@ public class OrderDetailEntity {
     @JoinColumn(name = "product_id",referencedColumnName = "product_id",insertable = false, updatable = false)
     private ProductEntity product;
 
+    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "order_id", nullable = false)
+    private OrderEntity orderEntity1;
+
     public OrderDetailEntity(OrderEntity order, ProductEntity product) {
         this.orderId = order.getId();
         this.productId = product.getId();

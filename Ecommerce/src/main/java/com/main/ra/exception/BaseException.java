@@ -18,7 +18,6 @@ public class BaseException extends RuntimeException {
 
 
     public BaseException(String errorCode, HttpStatus status) {
-        super();
         this.loader = new MessageLoader();
         this.errorMessage = new MessageResponse(loader.getMessage(errorCode));
         this.status = status;

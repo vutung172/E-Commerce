@@ -29,55 +29,51 @@ public class OrderServiceImpl {
     private OrderDetailServiceImpl orderDetailService;
     @Autowired
     private MapperUtilServiceImpl mapper;
-
     @Transactional
-    public OrderEntity checkoutAllInCart(Long userId, Long addressId, List<ShoppingCartEntity> cartList){
+    public OrderEntity checkoutAllInCart(Long userId, Long addressId, List<ShoppingCartEntity> cartList) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         AddressEntity address = addressRepository.findById(addressId).orElse(null);
-        if (user != null && address != null){
-            OrderEntity order = add(userId);
-            if (order != null){
-                List<OrderDetailEntity> orderDetailList = cartList.stream()
-                        .map(c -> orderDetailService.add(order.getId(),c.getProductId(),c.getOrderQuantity()))
-                        .toList();
-                Double totalPrice = orderDetailList.stream()
-                        .mapToDouble(od -> ( od.getProduct().getUnitPrice() * od.getOrderQuantity()))
-                        .sum();
-                order.setStatus(OrderStatus.WAITING);
-                order.setReceiveName(address.getReceiveName());
-                order.setReceiveAddress(address.getFullAddress());
-                order.setReceivePhone(address.getPhone());
-                order.setTotalPrice(totalPrice);
-                return update(order.getId(), order);
-            } else {
-                throw new BaseException("exception.OrderNotFound",HttpStatus.NOT_FOUND);
-            }
+        if (user != null && address != null) {
+            OrderEntity order = OrderEntity.builder()
+                    .userId(userId)
+                    .status(OrderStatus.WAITING)
+                    .receiveName(address.getReceiveName())
+                    .receiveAddress(address.getFullAddress())
+                    .receivePhone(address.getPhone())
+                    .build();
+            List<OrderDetailEntity> orderDetailList = cartList.stream()
+                    .map(c -> orderDetailService.add(order.getId(), c.getProductId(), c.getOrderQuantity()))
+                    .toList();
+            Double totalPrice = orderDetailList.stream()
+                    .mapToDouble(od -> (od.getProduct().getUnitPrice() * od.getOrderQuantity()))
+                    .sum();
+            order.setTotalPrice(totalPrice);
+            return orderRepository.save(order);
         } else {
             throw new BaseException("exception.UserNotFound", HttpStatus.NOT_FOUND);
         }
     }
 
-    @Transactional
-    public OrderEntity add(Long userId){
+
+    public OrderEntity add(Long userId) {
         OrderEntity order = OrderEntity.builder()
                 .userId(userId)
                 .build();
         return orderRepository.save(order);
     }
 
-    @Transactional
-    public OrderEntity update(Long orderId, OrderEntity newOrder){
+    public OrderEntity update(Long orderId, OrderEntity newOrder) {
         OrderEntity order = orderRepository.findById(orderId).orElse(null);
-        if (order != null){
-            mapper.updateToEntity(newOrder,order);
+        if (order != null) {
+            mapper.updateToEntity(newOrder, order);
             return orderRepository.save(order);
         } else {
-            throw new BaseException("exception.OrderNotFound",HttpStatus.NOT_FOUND);
+            throw new BaseException("exception.OrderNotFound", HttpStatus.NOT_FOUND);
         }
     }
 
 
-    public OrderEntity findByOrderId(Long orderId){
+    public OrderEntity findByOrderId(Long orderId) {
         return orderRepository.findById(orderId).orElse(null);
     }
 }

@@ -10,6 +10,7 @@ import com.main.ra.model.dto.response.DataResponse;
 import com.main.ra.model.dto.response.MessageResponse;
 import com.main.ra.model.entity.OrderEntity;
 import com.main.ra.model.entity.ShoppingCartEntity;
+import com.main.ra.repository.OrderRepository;
 import com.main.ra.service.Impl.MapperUtilServiceImpl;
 import com.main.ra.service.Impl.OrderServiceImpl;
 import com.main.ra.service.Impl.ShoppingCartServiceImpl;
@@ -31,6 +32,8 @@ public class ShoppingCartApi {
     private OrderServiceImpl orderService;
     @Autowired
     private MapperUtilServiceImpl mapper;
+    @Autowired
+    private OrderRepository orderRepository;
     @Autowired
     private MessageLoader loader;
 
@@ -111,7 +114,7 @@ public class ShoppingCartApi {
     ){
         List<ShoppingCartEntity> cartEntities = cartService.findByUserId(userId);
         OrderEntity order = orderService.checkoutAllInCart(userId, request.getAddressId(), cartEntities);
-        OrderEntity order1 = orderService.findByOrderId(order.getId());
+        OrderEntity order1 = orderRepository.findById(order.getId()).orElse(null);
         if (order1 != null){
             OrderDto orderDto = mapper.convertEntityToDTO(order1, OrderDto.class);
             return ResponseEntity.ok(new DataResponse<>(Collections.singletonList(orderDto)));
