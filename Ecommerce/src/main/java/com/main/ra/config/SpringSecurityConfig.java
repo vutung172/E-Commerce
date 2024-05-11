@@ -49,15 +49,16 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf()
+        http
+                .csrf()
                 .disable()
                 .authorizeRequests()
                 .requestMatchers(apiConfig.getWHITE_LIST_API()).permitAll()
                 .requestMatchers(apiConfig.getADMIN_LIST_API()).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(authHandler)
-                .and()
+                /*.exceptionHandling().authenticationEntryPoint(authHandler)
+                .and()*/
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider())

@@ -1,28 +1,23 @@
 package com.main.ra.model.entity;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.main.ra.model.Enum.OrderStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GeneratedColumn;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.id.factory.internal.UUIDGenerationTypeStrategy;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.generator.EventType;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Builder
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "orders", schema = "ecommerce")
 public class OrderEntity {
     @Id
@@ -30,8 +25,8 @@ public class OrderEntity {
     @Column(name = "order_id", nullable = false)
     private Long id;
 
-    @Size(max = 100)
-    @Column(name = "serial_number", insertable = false)
+    @Generated(event = {EventType.INSERT,EventType.UPDATE})
+    @Column(name = "serial_number", length = 36)
     private String serialNumber;
 
     @Column(name = "user_id", nullable = false)
@@ -44,26 +39,24 @@ public class OrderEntity {
     @Column(name = "status")
     private OrderStatus status;
 
-    @Size(max = 100)
     @Column(name = "note", length = 100)
     private String note;
 
-    @Size(max = 100)
     @Column(name = "receive_name", length = 100)
     private String receiveName;
 
-    @Size(max = 255)
     @Column(name = "receive_address")
     private String receiveAddress;
 
-    @Size(max = 15)
     @Column(name = "receive_phone", length = 15)
     private String receivePhone;
 
-    @Column(name = "created_at", insertable = false)
+    @Generated(event = {EventType.INSERT,EventType.UPDATE})
+    @Column(name = "created_at")
     private LocalDate createdAt;
 
-    @Column(name = "received_at", insertable = false)
+    @Generated(event = {EventType.INSERT,EventType.UPDATE})
+    @Column(name = "received_at")
     private LocalDate receivedAt;
 
     @MapsId("userId")

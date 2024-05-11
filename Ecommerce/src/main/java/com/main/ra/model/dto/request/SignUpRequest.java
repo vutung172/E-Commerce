@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @PasswordConfirm.List(
-        @PasswordConfirm(field = "confirmPassword", fieldConfirm = "password", message = "Mat khai khong dung")
+        @PasswordConfirm(field = "confirmPassword", fieldConfirm = "password", message = "Mat khau khong dung")
 )
 public class SignUpRequest {
     @Length(min = 6, message = "{message.Min-Length-6}")
@@ -41,7 +41,6 @@ public class SignUpRequest {
 
     @Size(max = 255)
     @NotNull(message = "{message.NotNull}")
-    @PasswordConfirm.ConfirmField
     private String confirmPassword;
 
     @Size(max = 255)

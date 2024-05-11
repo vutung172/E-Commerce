@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.generator.EventType;
 import org.hibernate.validator.constraints.UUID;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
@@ -31,7 +33,7 @@ public class ProductEntity {
     @Column(name = "product_id")
     private Long id;
 
-    @Size(max = 100)
+    @Generated(event = {EventType.INSERT,EventType.UPDATE})
     @Column(name = "sku", length = 100)
     private String sku;
 
@@ -58,11 +60,11 @@ public class ProductEntity {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
+    @Generated(event = {EventType.INSERT,EventType.UPDATE})
     @Column(name = "created_at")
     private LocalDate createdAt;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
+    @Generated(event = {EventType.INSERT,EventType.UPDATE})
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 

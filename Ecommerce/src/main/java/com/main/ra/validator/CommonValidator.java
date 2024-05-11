@@ -8,6 +8,7 @@ import org.springframework.validation.ObjectError;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class CommonValidator {
@@ -24,11 +25,9 @@ public class CommonValidator {
     public Map<String, String> confirmPassword(BindingResult result){
         Map<String,String> fails = new HashMap<>();
         List<ObjectError> errors = result.getAllErrors();
-        errors.forEach(e -> {
+        errors.stream().filter(e -> Objects.equals(e.getCode(), "PasswordConfirm")).forEach(e -> {
             fails.put(e.getCode(), e.getDefaultMessage());
         });
         return fails;
     }
-
-
 }

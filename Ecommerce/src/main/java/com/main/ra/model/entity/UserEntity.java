@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.Generated;
+import org.hibernate.generator.EventType;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -55,11 +56,11 @@ public class UserEntity {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
+    @Generated(event = {EventType.INSERT})
     @Column(name = "created_at")
     private LocalDate createdAt;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/mm/yyyy")
+    @Generated(event = {EventType.UPDATE})
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 

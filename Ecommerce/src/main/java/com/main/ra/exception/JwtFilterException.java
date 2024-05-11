@@ -3,20 +3,14 @@ package com.main.ra.exception;
 import com.main.ra.model.dto.response.MessageResponse;
 import com.main.ra.util.MessageLoader;
 import jakarta.servlet.ServletException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
-import javax.naming.AuthenticationException;
 
 @Getter
 @Setter
-public class JwtFilterException extends RuntimeException{
+public class JwtFilterException extends ServletException {
     private MessageLoader loader;
     private MessageResponse errorMessage;
     private HttpStatus status;
@@ -27,5 +21,4 @@ public class JwtFilterException extends RuntimeException{
         this.errorMessage = new MessageResponse(loader.getMessage(errorCode));
         this.status = status;
     }
-
 }

@@ -29,26 +29,34 @@ public class OrderServiceImpl {
     private OrderDetailServiceImpl orderDetailService;
     @Autowired
     private MapperUtilServiceImpl mapper;
-    @Transactional
+
+    @Transactional(rollbackFor = {BaseException.class})
     public OrderEntity checkoutAllInCart(Long userId, Long addressId, List<ShoppingCartEntity> cartList) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         AddressEntity address = addressRepository.findById(addressId).orElse(null);
         if (user != null && address != null) {
-            OrderEntity order = OrderEntity.builder()
-                    .userId(userId)
-                    .status(OrderStatus.WAITING)
-                    .receiveName(address.getReceiveName())
-                    .receiveAddress(address.getFullAddress())
-                    .receivePhone(address.getPhone())
-                    .build();
-            List<OrderDetailEntity> orderDetailList = cartList.stream()
-                    .map(c -> orderDetailService.add(order.getId(), c.getProductId(), c.getOrderQuantity()))
-                    .toList();
-            Double totalPrice = orderDetailList.stream()
-                    .mapToDouble(od -> (od.getProduct().getUnitPrice() * od.getOrderQuantity()))
-                    .sum();
-            order.setTotalPrice(totalPrice);
-            return orderRepository.save(order);
+            OrderEntity order = add(userId);
+            if (order != null){
+                order.setUserId(userId);
+                order.setStatus(OrderStatus.WAITING);
+                order.setReceiveName(address.getReceiveName());
+                order.setReceiveAddress(address.getFullAddress());
+                order.setReceivePhone(address.getPhone());
+                if (!cartList.isEmpty()){
+                    List<OrderDetailEntity> orderDetailList = cartList.stream()
+                            .map(c -> orderDetailService.add(order.getId(), c.getProductId(), c.getOrderQuantity()))
+                            .toList();
+                    Double totalPrice = orderDetailList.stream()
+                            .mapToDouble(od -> (od.getProduct().getUnitPrice() * od.getOrderQuantity()))
+                            .sum();
+                    order.setTotalPrice(totalPrice);
+                    return update(order.getId(), order);
+                } else {
+                    throw new BaseException("exception.CartNotFound",HttpStatus.NOT_FOUND);
+                }
+            } else {
+                throw new BaseException("exception.OrderCreatedFailure",HttpStatus.FORBIDDEN);
+            }
         } else {
             throw new BaseException("exception.UserNotFound", HttpStatus.NOT_FOUND);
         }
@@ -76,4 +84,5 @@ public class OrderServiceImpl {
     public OrderEntity findByOrderId(Long orderId) {
         return orderRepository.findById(orderId).orElse(null);
     }
+
 }

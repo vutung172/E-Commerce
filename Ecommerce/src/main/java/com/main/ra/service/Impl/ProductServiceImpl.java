@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
             ProductEntity productDB = productRepository.save(updatedProduct);
             return mapper.convertEntityToDTO(productDB, ProductDto.class);
         }else {
-            throw new BaseException("exception.ProductNotFound", HttpStatus.FORBIDDEN);
+            throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);
         }
     }
 

@@ -15,9 +15,8 @@ public class AddressEntity {
     @Column(name = "address_id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @Column(name = "user_id")
+    private Long UserId;
 
     @Size(max = 255)
     @Column(name = "full_address")
@@ -30,5 +29,10 @@ public class AddressEntity {
     @Size(max = 50)
     @Column(name = "receive_name", length = 50)
     private String receiveName;
+
+    @MapsId("userId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private UserEntity user;
 
 }

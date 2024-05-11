@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Generated;
+import org.hibernate.generator.EventType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class CategoryEntity {
     @Column(name = "description")
     private String description;
 
-    @ColumnDefault("b'1")
+    @Generated(event = {EventType.INSERT,EventType.UPDATE})
     @Column(name = "status")
     private Boolean status;
 

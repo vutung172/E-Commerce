@@ -19,8 +19,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDetailIdEntity implements Serializable {
-    /*@Serial
-    private static final long serialVersionUID = 6934092568755304540L;*/
+    @Serial
+    private static final long serialVersionUID = 6934092568755304540L;
 
     @Id
     @NotNull

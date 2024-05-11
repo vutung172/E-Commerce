@@ -114,12 +114,24 @@ public class ShoppingCartApi {
     ){
         List<ShoppingCartEntity> cartEntities = cartService.findByUserId(userId);
         OrderEntity order = orderService.checkoutAllInCart(userId, request.getAddressId(), cartEntities);
-        OrderEntity order1 = orderRepository.findById(order.getId()).orElse(null);
-        if (order1 != null){
-            OrderDto orderDto = mapper.convertEntityToDTO(order1, OrderDto.class);
+        if (order != null){
+            OrderDto orderDto = mapper.convertEntityToDTO(order, OrderDto.class);
             return ResponseEntity.ok(new DataResponse<>(Collections.singletonList(orderDto)));
         } else {
             throw new BaseException("exception.OrderCreatedFailure",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DataResponse<OrderDto>> getOrderById(
+            @PathVariable Long id
+    ){
+        OrderEntity order = orderService.findByOrderId(id);
+        if (order != null){
+            OrderDto orderDto = mapper.convertEntityToDTO(order, OrderDto.class);
+            return ResponseEntity.ok(new DataResponse<>(Collections.singletonList(orderDto)));
+        } else {
+            throw new BaseException("exception.OrderCreatedFailure",HttpStatus.NOT_FOUND);
         }
     }
 }

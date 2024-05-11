@@ -116,7 +116,7 @@ END;
 #orders table
 CREATE TABLE orders(
     order_id        bigint PRIMARY KEY AUTO_INCREMENT                                      COMMENT '注文ID',
-    serial_number   varchar(100)                                                           COMMENT 'シリアル番号',
+    serial_number   varchar(36)  default (uuid())                                            COMMENT 'シリアル番号',
     user_id         bigint                                                        NOT NULL COMMENT 'ユーザーID',
     total_price     decimal(10, 2)                                                         COMMENT '合計金額',
     status          enum ('WAITING', 'CONFIRM', 'DELIVERY', 'SUCCESS', 'CANCEL', 'DENIED') COMMENT '注文状態',
@@ -136,6 +136,15 @@ ALTER TABLE orders
 DELIMITER //
 CREATE TRIGGER tgr_created_date_order_datestamp
     BEFORE INSERT ON orders FOR EACH ROW
+BEGIN
+    SET NEW.created_at = CURRENT_DATE;
+    SET NEW.received_at = DATE_ADD(CURRENT_DATE, INTERVAL 4 DAY);
+END;
+// DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER tgr_update_date_order_datestamp
+    BEFORE UPDATE ON orders FOR EACH ROW
 BEGIN
     SET NEW.created_at = CURRENT_DATE;
     SET NEW.received_at = DATE_ADD(CURRENT_DATE, INTERVAL 4 DAY);

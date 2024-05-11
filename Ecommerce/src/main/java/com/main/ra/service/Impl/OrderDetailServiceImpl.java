@@ -22,6 +22,7 @@ public class OrderDetailServiceImpl {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Transactional
     public OrderDetailEntity add(Long orderId, Long productId, Integer quantity){
         ProductEntity product = productRepository.findById(productId).orElse(null);
         OrderEntity order = orderRepository.findById(orderId).orElse(null);
