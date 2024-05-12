@@ -23,7 +23,7 @@ public class ProductApi {
             @RequestParam Integer size,
             @RequestParam String sort
     ){
-        Page<ProductDto> list = productService.findAll(page, size, sort);
+        Page<ProductDto> list = productService.findAllPages(page, size, sort);
         PageDataResponse<ProductDto> products = new PageDataResponse<>(list.getContent(), list.getTotalPages(), list.getNumber(),list.getSize(),sort);
         return ResponseEntity.ok(products);
     }

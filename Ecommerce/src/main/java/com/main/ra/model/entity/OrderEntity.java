@@ -1,13 +1,12 @@
 package com.main.ra.model.entity;
 
 import com.main.ra.model.Enum.OrderStatus;
+import com.main.ra.validator.OrderStatusValidate;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 import org.hibernate.generator.EventType;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -36,6 +35,7 @@ public class OrderEntity {
     private Double totalPrice;
 
     @Enumerated(value = EnumType.STRING)
+    /*@OrderStatusValidate(message = "{exception.OrderStatus.NotMatch}")*/
     @Column(name = "status")
     private OrderStatus status;
 

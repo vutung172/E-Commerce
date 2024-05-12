@@ -1,7 +1,6 @@
 package com.main.ra.model.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,12 +22,12 @@ public class OrderDetailIdEntity implements Serializable {
     private static final long serialVersionUID = 6934092568755304540L;
 
     @Id
-    @NotNull
+    @NotNull(message = "{message.NotNull}")
     @Column(name = "order_id", nullable = false)
     private Long orderId;
 
     @Id
-    @NotNull
+    @NotNull(message = "{message.NotNull}")
     @Column(name = "product_id", nullable = false)
     private Long productId;
 

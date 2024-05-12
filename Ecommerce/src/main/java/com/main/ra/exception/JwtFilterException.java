@@ -6,17 +6,18 @@ import jakarta.servlet.ServletException;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 
 @Getter
 @Setter
-public class JwtFilterException extends ServletException {
+public class JwtFilterException extends RuntimeException{
     private MessageLoader loader;
     private MessageResponse errorMessage;
     private HttpStatus status;
 
     public JwtFilterException(String errorCode, HttpStatus status) {
-        super();
+        super(errorCode);
         this.loader = new MessageLoader();
         this.errorMessage = new MessageResponse(loader.getMessage(errorCode));
         this.status = status;

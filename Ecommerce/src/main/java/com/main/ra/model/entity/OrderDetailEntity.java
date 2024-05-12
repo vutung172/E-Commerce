@@ -23,8 +23,8 @@ public class OrderDetailEntity {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Size(max = 100)
-    @Column(name = "name", length = 100)
+    @Size(max = 100, message = "message.Max-Length-100")
+    @Column(name = "name")
     private String name;
 
     @NumberFormat(pattern = "#,##0.00",style = NumberFormat.Style.CURRENCY)

@@ -22,12 +22,6 @@ public @interface PasswordConfirm {
     String field();
     String fieldConfirm();
 
-    @Target({ ElementType.FIELD})
-    @Retention(RUNTIME)
-    @interface ConfirmField{
-
-    }
-
     @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @interface List {

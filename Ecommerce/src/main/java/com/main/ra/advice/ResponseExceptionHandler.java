@@ -1,5 +1,6 @@
 package com.main.ra.advice;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.response.MessageResponse;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,15 @@ public class ResponseExceptionHandler {
         return new ResponseEntity<>(be.getErrorMessage(), be.getStatus());
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class, RuntimeException.class})
     @ResponseBody
     public ResponseEntity<MessageResponse> handleException(Exception e){
         return new ResponseEntity<>(MessageResponse.builder().message(e.getMessage()).build(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler({NumberFormatException.class})
+    @ResponseBody
+    public ResponseEntity<MessageResponse> handleNumberException(JsonParseException jse){
+        return new ResponseEntity<>(MessageResponse.builder().message(jse.getCause().toString()).build(), HttpStatus.FORBIDDEN);
     }
 }

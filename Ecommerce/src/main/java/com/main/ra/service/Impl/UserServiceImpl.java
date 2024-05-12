@@ -11,6 +11,7 @@ import com.main.ra.model.entity.RoleEntity;
 import com.main.ra.model.entity.UserEntity;
 import com.main.ra.repository.UserRepository;
 import com.main.ra.service.UserService;
+import com.main.ra.util.FileServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserRoleServiceImpl userRoleService;
     @Autowired
     private RoleServiceImpl roleService;
-    @Autowired
-    private PageableServiceImpl pageableService;
     @Autowired
     private MapperUtilServiceImpl mapper;
     @Autowired
@@ -83,10 +82,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserEntity update(Long userId, UserRequest request){
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user != null){
-            String fileLocation = uploadFileLocation.concat("/userId_"+userId+"/"+ LocalDate.now());
-            String fileName = fileService.save(fileLocation,request.getFile());
             UserEntity updatedUser= mapper.updateToEntity(request,user);
-            updatedUser.setAvatar(fileName);
+            if (request.getFile().getSize() > 0){
+                String fileLocation = uploadFileLocation.concat("/userId_"+userId+"/"+ LocalDate.now());
+                String fileName = fileService.save(fileLocation,request.getFile());
+                updatedUser.setAvatar(fileName);
+            }
             return userRepository.save(updatedUser);
         }else {
             throw new BaseException("exception.UserNotFound", HttpStatus.NOT_FOUND);

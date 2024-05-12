@@ -2,6 +2,8 @@ package com.main.ra.advice;
 
 import com.main.ra.validator.CommonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.PriorityOrdered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,8 +21,8 @@ public class ValidatorExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex) {
-        BindingResult result = ex.getBindingResult();
+    public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException manve) {
+        BindingResult result = manve.getBindingResult();
         Map<String, String> validated =  commonValidator.validate(result);
         Map<String,String> confirmPassword = commonValidator.confirmPassword(result);
         validated.putAll(confirmPassword);

@@ -3,14 +3,13 @@ package com.main.ra.controller.user;
 import com.main.ra.model.dto.UserDto;
 import com.main.ra.model.dto.request.UserRequest;
 import com.main.ra.model.dto.response.DataResponse;
+import com.main.ra.model.dto.response.MessageResponse;
 import com.main.ra.model.entity.UserEntity;
-import com.main.ra.service.Impl.FileServiceImpl;
+import com.main.ra.util.FileServiceImpl;
 import com.main.ra.service.Impl.MapperUtilServiceImpl;
 import com.main.ra.service.Impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class AccountApi {
             UserDto userDto = mapper.convertEntityToDTO(user, UserDto.class);
             return ResponseEntity.ok(DataResponse.builder().data(Collections.singletonList(userDto)).build());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(MessageResponse.builder().message("exception.UserNotFound").build(),HttpStatus.NOT_FOUND);
         }
     }
 

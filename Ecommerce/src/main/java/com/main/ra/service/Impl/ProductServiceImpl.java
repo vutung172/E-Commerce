@@ -7,7 +7,9 @@ import com.main.ra.model.dto.request.PageableRequest;
 import com.main.ra.model.dto.request.ProductRequest;
 import com.main.ra.model.entity.ProductEntity;
 import com.main.ra.repository.ProductRepository;
+import com.main.ra.service.BaseService;
 import com.main.ra.service.ProductService;
+import com.main.ra.util.FileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -20,7 +22,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl implements BaseService<ProductEntity,Long,ProductRequest>,ProductService {
     @Value("${upload.Product.location}")
     private String fileUploadLocation;
     @Autowired
@@ -32,35 +34,39 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private PageableServiceImpl pageableService;
 
-
-    public ProductDto addProduct(ProductRequest request) {
-        String fileLocation = fileUploadLocation.concat("/CategoryId_"+request.getCategoryId()+"/"+request.getProductName());
-        if (productRepository.findProductEntitiesByProductName(request.getProductName()) == null) {
-            String fileName = fileService.save(fileLocation,request.getImage());
-            ProductEntity product = mapper.convertDTOToEntity(request, ProductEntity.class);
-            product.setImage(fileName);
-            ProductEntity productDB = productRepository.save(product);
-            System.out.println(productDB.getSku());
-            return mapper.convertEntityToDTO(productDB, ProductDto.class);
+    @Override
+    public ProductEntity add(ProductRequest request) {
+        ProductEntity product = productRepository.findProductEntitiesByProductName(request.getProductName());
+        if (product == null) {
+            product = mapper.convertDTOToEntity(request, ProductEntity.class);
+            if (request.getImage().getSize() > 0){
+                String fileLocation = fileUploadLocation.concat("/CategoryId_"+request.getCategoryId()+"/"+request.getProductName());
+                String fileName = fileService.save(fileLocation,request.getImage());
+                product.setImage(fileName);
+            }
+            return productRepository.save(product);
         } else {
             throw new BaseException("exception.ProductExisted", HttpStatus.FORBIDDEN);
         }
     }
-    public ProductDto updateProduct(Long id, ProductRequest request){
-        String fileLocation = fileUploadLocation.concat("/CategoryId_"+request.getCategoryId()+"/"+request.getProductName());
+    @Override
+    public ProductEntity update(Long id, ProductRequest request){
         ProductEntity product = productRepository.findById(id).orElse(null);
         if (product != null){
-            String fileName = fileService.save(fileLocation,request.getImage());
-            ProductEntity updatedProduct = mapper.updateToEntity(request,product);
-            updatedProduct.setImage(fileName);
-            ProductEntity productDB = productRepository.save(updatedProduct);
-            return mapper.convertEntityToDTO(productDB, ProductDto.class);
+           product = mapper.updateToEntity(request,product);
+            if (request.getImage().getSize() > 0){
+                String fileLocation = fileUploadLocation.concat("/CategoryId_"+request.getCategoryId()+"/"+request.getProductName());
+                String fileName = fileService.save(fileLocation,request.getImage());
+                product.setImage(fileName);
+            }
+            return productRepository.save(product);
         }else {
             throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);
         }
     }
 
-    public boolean deleteProduct(Long id){
+    @Override
+    public boolean delete(Long id){
         ProductEntity productEntity = productRepository.findById(id).orElse(null);
         if (productEntity != null){
             productRepository.delete(productEntity);
@@ -70,14 +76,23 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public ProductDto findById(Long id){
-        ProductEntity product = productRepository.findById(id).orElse(null);
-        if (product != null){
-            return mapper.convertEntityToDTO(product, ProductDto.class);
-        } else {
-            throw new BaseException("exception.ProductNotFound=",HttpStatus.NOT_FOUND);
-        }
+    @Override
+    public ProductEntity findById(Long id){
+        return productRepository.findById(id).orElse(null);
+    }
 
+    @Override
+    public List<ProductEntity> findAll(){
+        return productRepository.findAll();
+    };
+    public Page<ProductDto> findAllPages(Integer page, Integer size, String sortBy) {
+        try {
+            Sort sortType = pageableService.validateSortType(sortBy);
+            PageableRequest pageableRequest = new PageableRequest(page, size, sortType);
+            return productRepository.findAll(pageableRequest).map(pe -> mapper.convertEntityToDTO(pe, ProductDto.class));
+        } catch (PageableDtoException pe) {
+            throw new RuntimeException();
+        }
     }
 
     public List<ProductDto> findByProductNameOrDescription(String name) {
@@ -93,16 +108,6 @@ public class ProductServiceImpl implements ProductService {
             }
             return list;
         } catch (Exception e) {
-            throw new RuntimeException();
-        }
-    }
-
-    public Page<ProductDto> findAll(Integer page, Integer size, String sortBy) {
-        try {
-            Sort sortType = pageableService.validateSortType(sortBy);
-            PageableRequest pageableRequest = new PageableRequest(page, size, sortType);
-            return productRepository.findAll(pageableRequest).map(pe -> mapper.convertEntityToDTO(pe, ProductDto.class));
-        } catch (PageableDtoException pe) {
             throw new RuntimeException();
         }
     }

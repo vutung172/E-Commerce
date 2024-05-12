@@ -2,11 +2,8 @@ package com.main.ra.service.Impl;
 
 import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.CartDto;
-import com.main.ra.model.dto.UserDto;
-import com.main.ra.model.dto.request.UserRequest;
 import com.main.ra.model.entity.ProductEntity;
 import com.main.ra.model.entity.ShoppingCartEntity;
-import com.main.ra.model.entity.UserEntity;
 import com.main.ra.service.MapperUtilService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

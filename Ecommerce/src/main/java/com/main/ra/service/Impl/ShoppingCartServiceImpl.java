@@ -1,6 +1,7 @@
 package com.main.ra.service.Impl;
 
 import com.main.ra.exception.BaseException;
+import com.main.ra.model.dto.request.PayloadRequest;
 import com.main.ra.model.entity.ProductEntity;
 import com.main.ra.model.entity.ShoppingCartEntity;
 import com.main.ra.model.entity.UserEntity;
@@ -19,15 +20,13 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ShoppingCartServiceImpl implements BaseService {
+public class ShoppingCartServiceImpl implements BaseService<ShoppingCartEntity,Long, PayloadRequest> {
     @Autowired
     private ShoppingCartRepository cartRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private ProductRepository productRepository;
-    @Autowired
-    private MapperUtilServiceImpl mapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCartEntity.class);
 
@@ -35,8 +34,7 @@ public class ShoppingCartServiceImpl implements BaseService {
         return cartRepository.findAllByUserId(id);
     }
 
-
-    public ShoppingCartEntity add(Long userId, Long productId, Integer quantity) {
+    public ShoppingCartEntity addAll(Long userId, Long productId, Integer quantity) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             ProductEntity productEntity = productRepository.findById(productId).orElse(null);
@@ -85,7 +83,28 @@ public class ShoppingCartServiceImpl implements BaseService {
         }
     }
 
-    public ShoppingCartEntity findByProductId(Long userId,Long productId){
-        return cartRepository.findShoppingCartEntitiesByUserIdAndProductId(userId,productId).orElse(null);
+    @Override
+    public ShoppingCartEntity add(PayloadRequest objectRequest) {
+        return null;
+    }
+
+    @Override
+    public ShoppingCartEntity update(Long id,PayloadRequest newObjectRequest) {
+        return null;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        return false;
+    }
+
+    @Override
+    public ShoppingCartEntity findById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<ShoppingCartEntity> findAll() {
+        return List.of();
     }
 }

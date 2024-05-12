@@ -15,15 +15,18 @@ import com.main.ra.service.Impl.MapperUtilServiceImpl;
 import com.main.ra.service.Impl.OrderServiceImpl;
 import com.main.ra.service.Impl.ShoppingCartServiceImpl;
 import com.main.ra.util.MessageLoader;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/api.myservice.com/v1/user/shopping-cart")
 public class ShoppingCartApi {
     @Autowired
@@ -54,7 +57,7 @@ public class ShoppingCartApi {
             @RequestHeader Long userId,
             @RequestBody PayloadRequest<String,String> payload
             ){
-        ShoppingCartEntity cartEntity = cartService.add(userId,
+        ShoppingCartEntity cartEntity = cartService.addAll(userId,
                 Long.valueOf(payload.getPayload().get("productId")),
                 Integer.valueOf(payload.getPayload().get("quantity")));
         if (cartEntity != null){
@@ -72,7 +75,7 @@ public class ShoppingCartApi {
             @PathVariable Long productId,
             @RequestBody PayloadRequest<String,String> payload
     ){
-        ShoppingCartEntity cart = cartService.add(userId,
+        ShoppingCartEntity cart = cartService.addAll(userId,
                 productId,
                 Integer.valueOf(payload.getPayload().get("quantity")));
         if (cart != null){
@@ -110,7 +113,7 @@ public class ShoppingCartApi {
     @PostMapping("/checkout")
     public ResponseEntity checkout(
             @RequestHeader Long userId,
-            @RequestBody AddressRequest request
+            @RequestBody @Valid AddressRequest request
     ){
         List<ShoppingCartEntity> cartEntities = cartService.findByUserId(userId);
         OrderEntity order = orderService.checkoutAllInCart(userId, request.getAddressId(), cartEntities);
