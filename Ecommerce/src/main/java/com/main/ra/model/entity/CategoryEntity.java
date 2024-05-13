@@ -24,15 +24,14 @@ public class CategoryEntity {
 
     @Size(max = 100,message = "{message.Max-Length-100}")
     @NotNull(message = "{message.NotNull}")
-    @Column(name = "category_name")
+    @Column(name = "category_name", unique = true)
     private String categoryName;
 
     @Column(name = "description")
     private String description;
 
-    @Generated(event = {EventType.INSERT,EventType.UPDATE})
-    @ColumnDefault(value = "b'1'")
-    @Column(name = "status")
+    /*@Generated(event = {EventType.INSERT,EventType.UPDATE})*/
+    @Column(name = "status", insertable = false)
     private Boolean status;
 
     @OneToMany(mappedBy = "category")

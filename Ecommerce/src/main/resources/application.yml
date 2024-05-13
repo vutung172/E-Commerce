@@ -41,13 +41,13 @@ server:
             enabled: false
 logging:
     level:
-        root: DEBUG
-    #        org:
-#            springframework:
-#                jdbc:
-#                    core: DEBUG
-#            hibernate:
-#                SQL: INFO
+        root: INFO
+        org:
+            springframework:
+                jdbc:
+                    core: DEBUG
+            hibernate:
+                SQL: INFO
     file:
         name: logs/application.log
 

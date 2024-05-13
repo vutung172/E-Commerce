@@ -30,9 +30,9 @@ public class ProductApi {
 
     @GetMapping(value = "/search")
     public ResponseEntity findAllProductByKeyName(
-             @RequestParam String productName
+             @RequestParam String searchName
     ) {
-        List<ProductDto> list = productService.findByProductNameOrDescription(productName);
+        List<ProductDto> list = productService.findByProductNameOrDescription(searchName);
         return ResponseEntity.ok(new DataResponse<>(list));
     }
 

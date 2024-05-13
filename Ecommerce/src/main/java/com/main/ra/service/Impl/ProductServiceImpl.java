@@ -5,7 +5,9 @@ import com.main.ra.exception.PageableDtoException;
 import com.main.ra.model.dto.ProductDto;
 import com.main.ra.model.dto.request.PageableRequest;
 import com.main.ra.model.dto.request.ProductRequest;
+import com.main.ra.model.entity.CategoryEntity;
 import com.main.ra.model.entity.ProductEntity;
+import com.main.ra.repository.CategoryRepository;
 import com.main.ra.repository.ProductRepository;
 import com.main.ra.service.BaseService;
 import com.main.ra.service.ProductService;
@@ -21,11 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
-public class ProductServiceImpl implements BaseService<ProductEntity,Long,ProductRequest>,ProductService {
+@Transactional
+public class ProductServiceImpl implements BaseService<ProductEntity, Long, ProductRequest>, ProductService {
     @Value("${upload.Product.location}")
     private String fileUploadLocation;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Autowired
     private FileServiceImpl fileService;
     @Autowired
@@ -36,55 +41,74 @@ public class ProductServiceImpl implements BaseService<ProductEntity,Long,Produc
     @Override
     public ProductEntity add(ProductRequest request) {
         ProductEntity product = productRepository.findProductEntitiesByProductName(request.getProductName());
+        CategoryEntity category = categoryRepository.findById(request.getCategoryId()).orElse(null);
         if (product == null) {
-            product = mapper.convertDTOToEntity(request, ProductEntity.class);
-            if (request.getImage().getSize() > 0){
-                String fileLocation = fileUploadLocation.concat("/CategoryId_"+request.getCategoryId()+"/"+request.getProductName());
-                String fileName = fileService.save(fileLocation,request.getImage());
-                product.setImage(fileName);
+            if (category != null) {
+                if (category.getStatus()) {
+                    product = mapper.convertDTOToEntity(request, ProductEntity.class);
+                    if (request.getImage().getSize() > 0) {
+                        String fileLocation = fileUploadLocation.concat("/CategoryId_" + request.getCategoryId() + "/" + request.getProductName());
+                        String fileName = fileService.save(fileLocation, request.getImage());
+                        product.setImage(fileName);
+                    }
+                    return productRepository.save(product);
+                } else {
+                    throw new BaseException("exception.CategoryDisable", HttpStatus.FORBIDDEN);
+                }
+            } else {
+                throw new BaseException("exception.CategoryNotFound", HttpStatus.NOT_FOUND);
             }
-            return productRepository.save(product);
         } else {
             throw new BaseException("exception.ProductExisted", HttpStatus.FORBIDDEN);
         }
     }
 
     @Override
-    public ProductEntity update(Long id, ProductRequest request){
+    public ProductEntity update(Long id, ProductRequest request) {
         ProductEntity product = productRepository.findById(id).orElse(null);
-        if (product != null){
-           product = mapper.updateToEntity(request,product);
-            if (request.getImage().getSize() > 0){
-                String fileLocation = fileUploadLocation.concat("/CategoryId_"+request.getCategoryId()+"/"+request.getProductName());
-                String fileName = fileService.save(fileLocation,request.getImage());
-                product.setImage(fileName);
+        CategoryEntity category = categoryRepository.findById(request.getCategoryId()).orElse(null);
+        if (product != null) {
+            if (category != null) {
+                if (category.getStatus()) {
+                    product = mapper.updateToEntity(request, product);
+                    if (request.getImage().getSize() > 0) {
+                        String fileLocation = fileUploadLocation.concat("/CategoryId_" + request.getCategoryId() + "/" + request.getProductName());
+                        String fileName = fileService.save(fileLocation, request.getImage());
+                        product.setImage(fileName);
+                    }
+                    return productRepository.saveAndFlush(product);
+                } else {
+                    throw new BaseException("exception.CategoryDisable", HttpStatus.FORBIDDEN);
+                }
+            } else {
+                throw new BaseException("exception.CategoryNotFound", HttpStatus.NOT_FOUND);
             }
-            return productRepository.saveAndFlush(product);
-        }else {
+        } else {
             throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public boolean delete(Long id){
+    public boolean delete(Long id) {
         ProductEntity productEntity = productRepository.findById(id).orElse(null);
-        if (productEntity != null){
+        if (productEntity != null) {
             productRepository.delete(productEntity);
             return true;
         } else {
-            throw new BaseException("exception.ProductNotFound",HttpStatus.NOT_FOUND);
+            throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ProductEntity findById(Long id){
+    public ProductEntity findById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<ProductEntity> findAll(){
+    public List<ProductEntity> findAll() {
         return productRepository.findAll();
-    };
+    }
+
     public Page<ProductDto> findAllPages(Integer page, Integer size, String sortBy) {
         try {
             Sort sortType = pageableService.validateSortType(sortBy);
@@ -98,7 +122,7 @@ public class ProductServiceImpl implements BaseService<ProductEntity,Long,Produc
     public List<ProductDto> findByProductNameOrDescription(String name) {
         List<ProductDto> list = new ArrayList<>();
         try {
-            String searchKey = "%".concat(name.concat("%")).replace(" ","%").toLowerCase();
+            String searchKey = "%".concat(name.concat("%")).replace(" ", "%").toLowerCase();
             List<ProductEntity> products = productRepository.findAllByProductNameIsLikeIgnoreCaseOrDescriptionIsLikeIgnoreCase(searchKey, searchKey);
             if (!products.isEmpty()) {
                 products.forEach(p -> {

@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrderServiceImpl {
     @Autowired
     private OrderRepository orderRepository;

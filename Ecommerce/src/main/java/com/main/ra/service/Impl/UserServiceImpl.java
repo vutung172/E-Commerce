@@ -8,13 +8,14 @@ import com.main.ra.model.dto.request.NewPasswordRequest;
 import com.main.ra.model.dto.request.SignUpRequest;
 import com.main.ra.model.dto.request.PageableRequest;
 import com.main.ra.model.dto.request.UserRequest;
+import com.main.ra.model.entity.AddressEntity;
 import com.main.ra.model.entity.RoleEntity;
 import com.main.ra.model.entity.UserEntity;
+import com.main.ra.repository.AddressRepository;
 import com.main.ra.repository.UserRepository;
 import com.main.ra.service.UserService;
 import com.main.ra.util.FileServiceImpl;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,8 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
     @Value("${upload.User.location}")
@@ -43,9 +42,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private MapperUtilServiceImpl mapper;
     @Autowired
-    private PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
     @Autowired
     private FileServiceImpl fileService;
+
+    public UserServiceImpl(PasswordEncoder encoder) {
+        this.encoder = encoder;
+    }
 
 
     @Override
@@ -112,9 +115,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     public boolean changePassword(Long userId, NewPasswordRequest request){
         UserEntity user = userRepository.findById(userId).orElse(null);
-        String oldPassword = encoder.encode(request.getOldPassword());
         if (user != null){
-            if (user.getPassword().equals(oldPassword)){
+            if (encoder.matches(request.getOldPassword(), user.getPassword())){
                 user.setPassword(encoder.encode(request.getNewPassword()));
                 userRepository.save(user);
                 return true;

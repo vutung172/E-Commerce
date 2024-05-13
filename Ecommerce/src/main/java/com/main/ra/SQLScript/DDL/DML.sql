@@ -1,4 +1,6 @@
 
+use ecommerce;
+
 INSERT INTO users(
     user_name  ,
     email      ,
@@ -16,3 +18,14 @@ INSERT INTO users(
         );
 
 SELECT * FROM users WHERE user_name LIKE '%tung%' ESCAPE '\\';
+
+SELECT * FROM address;
+SELECT * FROM categories;
+SELECT * FROM order_details;
+SELECT * FROM orders;
+SELECT * FROM products;
+SELECT * FROM roles;
+SELECT * FROM shopping_carts;
+SELECT * FROM user_roles;
+SELECT * FROM users;
+SELECT * FROM wish_lists;

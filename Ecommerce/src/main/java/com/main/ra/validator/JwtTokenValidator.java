@@ -68,13 +68,9 @@ public class JwtTokenValidator {
     private String generateKey(String key) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
-            // Đưa chuỗi và digest để tạo băm
             byte[] hashedBytes = digest.digest(key.getBytes());
-            // Tạo secret key từ byte[] đã băm
             SecretKeySpec secretKeySpec = new SecretKeySpec(hashedBytes, "ASE");
-            // Chuyển key thành chuỗi base 64
-            String base64Key = base64Key(secretKeySpec.getEncoded());
-            return base64Key;
+            return base64Key(secretKeySpec.getEncoded());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

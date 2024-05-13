@@ -1362,6 +1362,92 @@
 							"response": []
 						},
 						{
+							"name": "change-password",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "userId",
+										"value": "{{userId}}"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "fullName",
+											"value": "vu thanh tung",
+											"contentType": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "tung1721991@gmail.com",
+											"contentType": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "phone",
+											"value": "0843628946",
+											"contentType": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "address",
+											"value": "ha nội",
+											"contentType": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "file",
+											"contentType": "multipart/form-data",
+											"type": "file",
+											"src": "/C:/Users/TungV/OneDrive/Máy tính/đăng fb thi/DSC01287.jpg"
+										},
+										{
+											"key": "request",
+											"value": "{\n\"fullName\":\"Vũ Thanh Tùng\",\n\"email\":\"tung1721@gmail.com\",\n\"phone\":\"0901112222\",\n\"address\":\"Hoàng Mai, Hà Nội\"\n}",
+											"contentType": "application/json",
+											"description": "{\n\"fullName\":\"Hồ Xuân Hùng\",\n\"email\":\"hung1234@gmail.com\",\n\"phone\":\"0993784672\",\n\"address\":\"Quận Tân Bình, TP Hồ Chí Minh\"\n}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8088/api.myservice.com/v1/user/account",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8088",
+									"path": [
+										"api.myservice.com",
+										"v1",
+										"user",
+										"account"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "add-new-address",
 							"protocolProfileBehavior": {
 								"disabledSystemHeaders": {}

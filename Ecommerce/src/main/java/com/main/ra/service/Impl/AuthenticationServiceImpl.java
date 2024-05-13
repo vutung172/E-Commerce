@@ -10,6 +10,7 @@ import com.main.ra.model.entity.UserEntity;
 import com.main.ra.model.entity.UserRoleEntity;
 import com.main.ra.service.AuthenticationService;
 import com.main.ra.validator.JwtTokenValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService{
     @Autowired
     private JwtTokenValidator tokenValidator;
@@ -29,7 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     @Autowired
     private UserServiceImpl userService;
     @Autowired
-    private PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
     public boolean signUp(SignUpRequest req) {
         UserEntity userAdded = userService.addUser(req);

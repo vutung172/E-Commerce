@@ -44,7 +44,7 @@ public class ShoppingCartServiceImpl implements BaseService<ShoppingCartEntity,L
                         .filter(c -> c.getProductId().equals(productId))
                         .findFirst()
                         .ifPresentOrElse(
-                                c -> c.setOrderQuantity(quantity),
+                                c -> c.setOrderQuantity(c.getOrderQuantity()+quantity),
                                 () -> carts.add(ShoppingCartEntity.builder()
                                                 .userId(userId)
                                                 .productId(productId)
