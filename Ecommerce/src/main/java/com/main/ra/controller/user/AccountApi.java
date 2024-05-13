@@ -4,6 +4,7 @@ import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.AddressDto;
 import com.main.ra.model.dto.UserDto;
 import com.main.ra.model.dto.request.NewAddressRequest;
+import com.main.ra.model.dto.request.NewPasswordRequest;
 import com.main.ra.model.dto.request.UserRequest;
 import com.main.ra.model.dto.response.DataResponse;
 import com.main.ra.model.dto.response.MessageResponse;
@@ -64,6 +65,18 @@ public class AccountApi {
         UserEntity userEntity = userService.update(userId,request);
         UserDto userDto = mapper.convertEntityToDTO(userEntity, UserDto.class);
         return ResponseEntity.ok(new DataResponse<>(Collections.singletonList(userDto)));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity changePassword(
+            @RequestHeader Long userId,
+            @RequestBody @Valid NewPasswordRequest request
+    ){
+        if(userService.changePassword(userId,request)){
+            return ResponseEntity.ok(MessageResponse.builder().message(loader.getMessage("success.ChangePassword")).build());
+        } else {
+            throw new BaseException("failure.ChangePassword",HttpStatus.FORBIDDEN);
+        }
     }
 
     @PostMapping("/address")

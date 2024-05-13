@@ -4,6 +4,7 @@ import com.main.ra.exception.BaseException;
 import com.main.ra.model.Enum.UserStatus;
 import com.main.ra.model.dto.UserDetailAdapter;
 import com.main.ra.model.dto.UserDto;
+import com.main.ra.model.dto.request.NewPasswordRequest;
 import com.main.ra.model.dto.request.SignUpRequest;
 import com.main.ra.model.dto.request.PageableRequest;
 import com.main.ra.model.dto.request.UserRequest;
@@ -107,6 +108,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             throw  new BaseException("exception.UserNotFound",HttpStatus.NOT_FOUND);
         }
+    }
+
+    public boolean changePassword(Long userId, NewPasswordRequest request){
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        String oldPassword = encoder.encode(request.getOldPassword());
+        if (user != null){
+            if (user.getPassword().equals(oldPassword)){
+                user.setPassword(encoder.encode(request.getNewPassword()));
+                userRepository.save(user);
+                return true;
+            }else {
+                throw new BaseException("exception.PasswordIdNotSame",HttpStatus.FORBIDDEN);
+            }
+        }else {
+            throw  new BaseException("exception.UserNotFound",HttpStatus.NOT_FOUND);
+        }
+
     }
 
     public Page<UserDto> findAllByUserName(String key, PageableRequest pageableRequest){
