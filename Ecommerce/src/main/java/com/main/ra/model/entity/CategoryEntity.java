@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Generated;
 import org.hibernate.generator.EventType;
 
@@ -21,15 +22,16 @@ public class CategoryEntity {
     @Column(name = "category_id", nullable = false)
     private Long id;
 
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "category_name", nullable = false, length = 100)
+    @Size(max = 100,message = "{message.Max-Length-100}")
+    @NotNull(message = "{message.NotNull}")
+    @Column(name = "category_name")
     private String categoryName;
 
     @Column(name = "description")
     private String description;
 
     @Generated(event = {EventType.INSERT,EventType.UPDATE})
+    @ColumnDefault(value = "b'1'")
     @Column(name = "status")
     private Boolean status;
 

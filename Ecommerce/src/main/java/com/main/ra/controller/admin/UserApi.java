@@ -83,7 +83,7 @@ public class UserApi {
 
     @GetMapping("/search")
     public ResponseEntity findUserByUserName(
-            @RequestHeader String search,
+            @RequestParam String search,
             @RequestParam Integer page,
             @RequestParam Integer size,
             @RequestParam String sort

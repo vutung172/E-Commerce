@@ -5,17 +5,17 @@ USE ecommerce;
 # users table
 CREATE TABLE users
 (
-    user_id    bigint PRIMARY KEY AUTO_INCREMENT COMMENT 'ユーザーID',
-    user_name  varchar(100)     NOT NULL COMMENT 'ユーザー名前',
-    email      varchar(255)              COMMENT '電子メール',
-    full_name  varchar(100)     NOT NULL COMMENT '氏名',
-    status     bit default 1             COMMENT 'ユーザー状態',
-    password   varchar(255)     NOT NULL COMMENT '暗証番号',
-    avatar     varchar(255)              COMMENT 'アバター',
-    phone      varchar(15)               COMMENT '電話番号',
-    address    varchar(255)     NOT NULL COMMENT '住所',
-    created_at date                      COMMENT '作成日付',
-    updated_at date                      COMMENT '更新日付'
+    user_id    bigint PRIMARY KEY AUTO_INCREMENT    COMMENT 'ユーザーID',
+    user_name  varchar(100) NOT NULL UNIQUE         COMMENT 'ユーザー名前',
+    email      varchar(255)                         COMMENT '電子メール',
+    full_name  varchar(100) NOT NULL                COMMENT '氏名',
+    status     bit default (1)                      COMMENT 'ユーザー状態',
+    password   varchar(255) NOT NULL                COMMENT '暗証番号',
+    avatar     varchar(255)                         COMMENT 'アバター',
+    phone      varchar(15)                          COMMENT '電話番号',
+    address    varchar(255) NOT NULL                COMMENT '住所',
+    created_at date                                 COMMENT '作成日付',
+    updated_at date                                 COMMENT '更新日付'
 );
 # users checker
 ALTER TABLE users
@@ -26,6 +26,7 @@ ALTER TABLE users
     ADD CONSTRAINT chk_email_fmt_users CHECK(email REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+.[a-z]+.[a-z]');
 ALTER TABLE users
     ADD CONSTRAINT chk_phone_fmt_users CHECK(phone REGEXP '^0[1-9]+[0-9]{8}$');
+
 # user trigger
 DELIMITER //
 CREATE TRIGGER tgr_create_date_user_datestamp
@@ -51,12 +52,12 @@ CREATE TABLE roles(
 
 # user_role
 CREATE TABLE user_roles(
-    id bigint PRIMARY KEY AUTO_INCREMENT COMMENT 'ユーザー許可ID',
-    user_id bigint NOT NULL COMMENT 'ユーザーID',
-    role_id bigint NOT NULL COMMENT '許可ID',
-    status bit default 1 COMMENT 'ユーザー許可状態'
+    id bigint PRIMARY KEY AUTO_INCREMENT    COMMENT 'ユーザー許可ID',
+    user_id bigint NOT NULL                 COMMENT 'ユーザーID',
+    role_id bigint NOT NULL                 COMMENT '許可ID',
+    status bit default (1)                  COMMENT 'ユーザー許可状態'
 );
-DROP TABLE user_roles;
+
 # user_role FOREIGN KEY
 ALTER TABLE user_roles
     ADD CONSTRAINT fk_user_roles_role_id
@@ -70,7 +71,7 @@ CREATE TABLE categories(
     category_id   bigint PRIMARY KEY AUTO_INCREMENT COMMENT 'カテゴリーID',
     category_name varchar(100)     NOT NULL         COMMENT 'カテゴリー名前',
     description   text                              COMMENT '説明',
-    status        bit default 1                     COMMENT 'カテゴリー状態'
+    status        bit default (1)                     COMMENT 'カテゴリー状態'
 );
 
 # products table
@@ -99,7 +100,7 @@ ALTER TABLE products
 # products triggers
 DELIMITER //
 CREATE TRIGGER tgr_created_date_product_datestamp
-    BEFORE INSERT ON users FOR EACH ROW
+    BEFORE INSERT ON products FOR EACH ROW
 BEGIN
     SET NEW.created_at = CURRENT_DATE;
 END;
@@ -107,7 +108,7 @@ END;
 
 DELIMITER //
 CREATE TRIGGER tgr_updated_date_product_datestamp
-    BEFORE UPDATE ON users FOR EACH ROW
+    BEFORE UPDATE ON products FOR EACH ROW
 BEGIN
     SET NEW.updated_at = CURRENT_DATE;
 END;
@@ -116,8 +117,8 @@ END;
 #orders table
 CREATE TABLE orders(
     order_id        bigint PRIMARY KEY AUTO_INCREMENT                                      COMMENT '注文ID',
-    serial_number   varchar(36)  default (uuid())                                            COMMENT 'シリアル番号',
-    user_id         bigint                                                        NOT NULL COMMENT 'ユーザーID',
+    serial_number   varchar(36)  default (uuid())                                          COMMENT 'シリアル番号',
+    user_id         bigint               NOT NULL                                          COMMENT 'ユーザーID',
     total_price     decimal(10, 2)                                                         COMMENT '合計金額',
     status          enum ('WAITING', 'CONFIRM', 'DELIVERY', 'SUCCESS', 'CANCEL', 'DENIED') COMMENT '注文状態',
     note            varchar(100)                                                           COMMENT 'ノート',
@@ -151,7 +152,6 @@ BEGIN
 END;
 // DELIMITER ;
 
-DROP TRIGGER tgr_created_date_order_datestamp;
 
 # order_details table
 CREATE TABLE order_details(
@@ -201,11 +201,11 @@ ALTER TABLE shopping_carts
 
 # address table
 CREATE TABLE address(
-    address_id   bigint PRIMARY KEY AUTO_INCREMENT COMMENT '住所ID',
-    user_id      bigint       COMMENT 'ユーザーID',
-    full_address varchar(255) COMMENT '住所詳細',
-    phone        varchar(15)  COMMENT '電話番号',
-    receive_name varchar(50)  COMMENT '届け先の名前'
+    address_id   bigint PRIMARY KEY AUTO_INCREMENT  COMMENT '住所ID',
+    user_id      bigint                             COMMENT 'ユーザーID',
+    full_address varchar(255)                       COMMENT '住所詳細',
+    phone        varchar(15)                        COMMENT '電話番号',
+    receive_name varchar(50)                        COMMENT '届け先の名前'
 );
 # address foreign key
 ALTER TABLE address

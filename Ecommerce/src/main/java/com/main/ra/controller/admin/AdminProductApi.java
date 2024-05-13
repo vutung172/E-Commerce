@@ -1,5 +1,6 @@
 package com.main.ra.controller.admin;
 
+import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.ProductDto;
 import com.main.ra.model.dto.request.ProductRequest;
 import com.main.ra.model.dto.response.DataResponse;
@@ -94,10 +95,15 @@ public class AdminProductApi {
             @PathVariable Long productId
     ){
         ProductEntity product = productService.findById(productId);
-        ProductDto dto = mapper.convertEntityToDTO(product, ProductDto.class);
-        return ResponseEntity.ok().body(DataResponse.builder()
-                .data(Collections.singletonList(dto))
-                .build());
+        if (product != null){
+            ProductDto dto = mapper.convertEntityToDTO(product, ProductDto.class);
+            return ResponseEntity.ok().body(DataResponse.builder()
+                    .data(Collections.singletonList(dto))
+                    .build());
+        } else {
+            throw new BaseException("exception.ProductNotFound",HttpStatus.NOT_FOUND);
+        }
+
     }
 
 

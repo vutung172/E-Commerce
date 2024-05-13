@@ -58,7 +58,24 @@ public class ShoppingCartServiceImpl implements BaseService<ShoppingCartEntity,L
         } else {
             throw new BaseException("exception.UserNotFound", HttpStatus.NOT_FOUND);
         }
+    }
 
+    public ShoppingCartEntity updateQuantityToCart(Long userId, Long productId, Integer quantity) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            ShoppingCartEntity cart = cartRepository.findShoppingCartEntitiesByProductId(productId).orElse(null);
+            if (cart != null) {
+                List<ShoppingCartEntity> carts = cartRepository.findAllByUserId(userId);
+                carts.stream()
+                        .filter(c -> c.getProductId().equals(productId))
+                        .forEach(c -> c.setOrderQuantity(c.getOrderQuantity()+quantity));
+                return cartRepository.saveAll(carts).stream().filter(c -> c.getProductId().equals(productId)).findFirst().orElse(null);
+            } else {
+                throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BaseException("exception.UserNotFound", HttpStatus.NOT_FOUND);
+        }
     }
 
     public boolean deleteByProductId(Long userId,Long productId){

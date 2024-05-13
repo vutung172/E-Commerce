@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.format.annotation.NumberFormat;
 
 @Builder
 @Getter
@@ -27,7 +26,6 @@ public class OrderDetailEntity {
     @Column(name = "name")
     private String name;
 
-    @NumberFormat(pattern = "#,##0.00",style = NumberFormat.Style.CURRENCY)
     @Column(name = "unit_price")
     private Double unitPrice;
 

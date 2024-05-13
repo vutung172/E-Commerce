@@ -8,10 +8,12 @@ import com.main.ra.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
@@ -21,12 +23,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     public RoleEntity findByRoleName(RoleType roleName){
-        try{
             return roleRepository.findRoleEntitiesByRoleName(roleName).orElse(null);
-        }catch (Exception e){
-            throw new BaseException("exception.response.DataNotFound", HttpStatus.NOT_FOUND);
-        }
-
     }
 
     public RoleEntity findRoleById(Long id){

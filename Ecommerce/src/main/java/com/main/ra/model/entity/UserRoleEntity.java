@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Generated;
+import org.hibernate.generator.EventType;
 
 @Getter
 @Setter
@@ -25,8 +27,7 @@ public class UserRoleEntity {
     @Column(name = "role_id", nullable = false)
     private Long roleId;
 
-    @ColumnDefault("b'1'")
-    @Column(name = "status")
+    @Column(name = "status",insertable = false)
     private Boolean status;
 
     @MapsId("userId")

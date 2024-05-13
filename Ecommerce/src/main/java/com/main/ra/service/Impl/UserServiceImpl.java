@@ -98,7 +98,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user != null){
             user.setStatus(!user.getStatus());
-            if (userRepository.save(user).getStatus()){
+            user = userRepository.save(user);
+            if (user.getStatus()){
                 return UserStatus.ACTIVE;
             } else {
                 return UserStatus.BLOCK;

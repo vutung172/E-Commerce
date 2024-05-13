@@ -27,7 +27,7 @@ public class AuthenticationApi {
     @PostMapping("/sign-up")
     public ResponseEntity signUp(@RequestBody @Valid SignUpRequest signUp){
         autService.signUp(signUp);
-        MessageResponse message = new MessageResponse(loader.getMessage("success.register"));
+        MessageResponse message = new MessageResponse(loader.getMessage("success.Register"));
         return ResponseEntity.ok(message);
 
     }

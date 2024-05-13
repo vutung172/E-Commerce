@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
-@Transactional
 public class ProductServiceImpl implements BaseService<ProductEntity,Long,ProductRequest>,ProductService {
     @Value("${upload.Product.location}")
     private String fileUploadLocation;
@@ -49,6 +48,7 @@ public class ProductServiceImpl implements BaseService<ProductEntity,Long,Produc
             throw new BaseException("exception.ProductExisted", HttpStatus.FORBIDDEN);
         }
     }
+
     @Override
     public ProductEntity update(Long id, ProductRequest request){
         ProductEntity product = productRepository.findById(id).orElse(null);
@@ -59,7 +59,7 @@ public class ProductServiceImpl implements BaseService<ProductEntity,Long,Produc
                 String fileName = fileService.save(fileLocation,request.getImage());
                 product.setImage(fileName);
             }
-            return productRepository.save(product);
+            return productRepository.saveAndFlush(product);
         }else {
             throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);
         }

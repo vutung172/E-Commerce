@@ -7,6 +7,7 @@ import com.main.ra.model.dto.request.SignInRequest;
 import com.main.ra.model.dto.request.SignUpRequest;
 import com.main.ra.model.dto.response.SignInResponse;
 import com.main.ra.model.entity.UserEntity;
+import com.main.ra.model.entity.UserRoleEntity;
 import com.main.ra.service.AuthenticationService;
 import com.main.ra.validator.JwtTokenValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,10 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                     .fullName(user.getUser().getFullName())
                     .type(token.getType())
                     .accessToken(token.getToken())
-                    .roles(user.getUser().getRoles().stream().map(r -> r.getRole().getRoleName()).collect(Collectors.toList()))
+                    .roles(user.getUser().getRoles().stream()
+                            .filter(UserRoleEntity::getStatus)
+                            .map(r -> r.getRole().getRoleName())
+                            .collect(Collectors.toList()))
                     .build();
 
         } catch (RuntimeException re) {

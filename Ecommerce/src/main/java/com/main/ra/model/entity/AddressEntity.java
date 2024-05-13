@@ -16,18 +16,18 @@ public class AddressEntity {
     private Long id;
 
     @Column(name = "user_id")
-    private Long UserId;
+    private Long userId;
 
-    @Size(max = 255)
+    @Size(max = 255, message = "{message.Max-Length-255}")
     @Column(name = "full_address")
     private String fullAddress;
 
-    @Size(max = 15)
-    @Column(name = "phone", length = 15)
+    @Size(max = 15,message = "{message.Max-Length-15}")
+    @Column(name = "phone")
     private String phone;
 
-    @Size(max = 50)
-    @Column(name = "receive_name", length = 50)
+    @Size(max = 50, message = "{message.Max-Length-50}")
+    @Column(name = "receive_name")
     private String receiveName;
 
     @MapsId("userId")

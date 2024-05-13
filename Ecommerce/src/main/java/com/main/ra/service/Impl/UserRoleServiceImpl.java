@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class UserRoleServiceImpl implements UserRoleService {
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -28,50 +29,60 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Autowired
     private MessageLoader loader;
 
-    public UserRoleEntity addUserRole(Long userId, Long roleId){
-        try {
-            UserEntity user = userRepository.findById(userId).orElse(null);
-            RoleEntity role = roleRepository.findById(roleId).orElse(null);
-            if (user != null && role != null){
+    public UserRoleEntity addUserRole(Long userId, Long roleId) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        RoleEntity role = roleRepository.findById(roleId).orElse(null);
+        if (user != null) {
+            if (role != null) {
                 UserRoleEntity userRole = new UserRoleEntity(user, role);
                 return userRoleRepository.save(userRole);
             } else {
-                throw new BaseException("exception.UserNotFound",HttpStatus.NOT_FOUND);
+                throw new BaseException("exception.RoleTypeNotFound", HttpStatus.NOT_FOUND);
             }
-        } catch (RuntimeException re){
-            throw new BaseException("exception.database.AddUserRoleFailure", HttpStatus.NOT_FOUND);
+        } else {
+            throw new BaseException("exception.UserNotFound", HttpStatus.NOT_FOUND);
         }
     }
 
-    public List<UserRoleEntity> updateUserRole(Long userId, Long roleId){
-        try {
-            List<UserRoleEntity> userRoles = userRoleRepository.findAllByUserId(userId);
-            if (userRoles.stream().noneMatch(ur -> ur.getRoleId().equals(roleId))){
-                userRoles.add(addUserRole(userId,roleId));
+    public List<UserRoleEntity> updateUserRole(Long userId, Long roleId) {
+        List<UserRoleEntity> userRoles = userRoleRepository.findAllByUserId(userId);
+        RoleEntity role = roleRepository.findById(roleId).orElse(null);
+        if (!userRoles.isEmpty()) {
+            if (role != null) {
+                if (userRoles.stream().noneMatch(ur -> ur.getRoleId().equals(roleId))) {
+                    userRoles.add(addUserRole(userId, roleId));
+                } else {
+                    userRoles.stream()
+                            .filter(ur -> ur.getRoleId().equals(roleId))
+                            .filter(ur -> !ur.getStatus())
+                            .forEach(ur -> ur.setStatus(true));
+                }
             } else {
+                throw new BaseException("exception.RoleTypeNotFound", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BaseException("exception.RoleTypeNotFound", HttpStatus.NOT_FOUND);
+        }
+        return userRoleRepository.saveAll(userRoles);
+    }
+
+    public boolean deleteRole(Long userId, Long roleId) {
+        List<UserRoleEntity> userRoles = userRoleRepository.findAllByUserId(userId);
+        RoleEntity role = roleRepository.findById(roleId).orElse(null);
+        if (!userRoles.isEmpty()) {
+            if (role != null) {
                 userRoles.stream()
                         .filter(ur -> ur.getRoleId().equals(roleId))
-                        .filter(ur -> !ur.getStatus())
-                        .forEach(ur -> ur.setStatus(true));
+                        .filter(UserRoleEntity::getStatus)
+                        .forEach(ur -> ur.setStatus(false));
+            } else {
+                throw new BaseException("exception.RoleTypeNotFound", HttpStatus.NOT_FOUND);
             }
-            return userRoleRepository.saveAll(userRoles);
-        } catch (RuntimeException re){
-            throw new BaseException("exception.database.AddUserRoleFailure", HttpStatus.NOT_FOUND);
+        } else {
+            throw new BaseException("exception.RoleTypeNotFound", HttpStatus.NOT_FOUND);
         }
-    }
-
-    public boolean deleteRole(Long userId, Long roleId){
-        try {
-            List<UserRoleEntity> userRoles = userRoleRepository.findAllByUserId(userId);
-            userRoles.stream()
-                    .filter(ur -> ur.getRoleId().equals(roleId))
-                    .filter(UserRoleEntity::getStatus)
-                    .forEach(ur -> ur.setStatus(false));
-            return userRoleRepository.saveAll(userRoles).stream()
-                    .filter(ur -> ur.getRoleId().equals(roleId))
-                    .noneMatch(UserRoleEntity::getStatus);
-        } catch (RuntimeException re){
-            throw new BaseException("exception.database.AddUserRoleFailure", HttpStatus.NOT_FOUND);
-        }
+        return userRoleRepository.saveAll(userRoles).stream()
+                .filter(ur -> ur.getRoleId().equals(roleId))
+                .noneMatch(UserRoleEntity::getStatus);
     }
 }

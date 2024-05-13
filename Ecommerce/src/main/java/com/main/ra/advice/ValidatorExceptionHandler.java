@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 
 @RestControllerAdvice
+@Order(value = PriorityOrdered.HIGHEST_PRECEDENCE)
 public class ValidatorExceptionHandler {
     @Autowired
     private CommonValidator commonValidator;
@@ -28,5 +29,4 @@ public class ValidatorExceptionHandler {
         validated.putAll(confirmPassword);
         return new ResponseEntity<>(validated, HttpStatus.BAD_REQUEST);
     }
-
 }

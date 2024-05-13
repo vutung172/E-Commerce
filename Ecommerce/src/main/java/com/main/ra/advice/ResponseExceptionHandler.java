@@ -24,9 +24,4 @@ public class ResponseExceptionHandler {
         return new ResponseEntity<>(MessageResponse.builder().message(e.getMessage()).build(), HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler({NumberFormatException.class})
-    @ResponseBody
-    public ResponseEntity<MessageResponse> handleNumberException(JsonParseException jse){
-        return new ResponseEntity<>(MessageResponse.builder().message(jse.getCause().toString()).build(), HttpStatus.FORBIDDEN);
-    }
 }

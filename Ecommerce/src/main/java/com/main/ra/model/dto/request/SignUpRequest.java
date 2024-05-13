@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @PasswordConfirm.List(
-        @PasswordConfirm(field = "confirmPassword", fieldConfirm = "password", message = "Mat khau khong dung")
+        @PasswordConfirm(field = "confirmPassword", fieldConfirm = "password", message = "{exception.PasswordNotSame}")
 )
 public class SignUpRequest {
     @Length(min = 6, message = "{message.Min-Length-6}")
@@ -25,32 +25,32 @@ public class SignUpRequest {
     @NotNull(message = "{message.NotNull}")
     private String userName;
 
-    @Size(max = 255)
+    @Size(max = 255, message = "{message.Max-Length-255}")
     @Email(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+\\.[a-z]+$", message = "{message.EmailFmt}")
     private String email;
 
-    @Size(max = 100)
+    @Size(max = 100, message = "{message.Max-Length-100}")
     @NotNull(message = "{message.NotNull}")
     private String fullName;
 
     private Boolean status;
 
-    @Size(max = 255)
+    @Size(max = 255, message = "{message.Max-Length-255}")
     @NotNull(message = "{message.NotNull}")
     private String password;
 
-    @Size(max = 255)
+    @Size(max = 255, message = "{message.Max-Length-255}")
     @NotNull(message = "{message.NotNull}")
     private String confirmPassword;
 
-    @Size(max = 255)
+    @Size(max = 255, message = "{message.Max-Length-255}")
     private String avatar;
 
-    @Size(max = 15)
+    @Size(max = 15, message = "{message.Max-Length-15}")
     @Pattern(regexp = "^0[1-9]+[0-9]{8}$", message = "{message.PhoneFmt}")
     private String phone;
 
-    @Size(max = 255)
+    @Size(max = 255, message = "{message.Max-Length-255}")
     @NotNull(message = "{message.NotNull}")
     private String address;
 

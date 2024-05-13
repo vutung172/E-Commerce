@@ -3,8 +3,15 @@ package com.main.ra.model.entity;
 import com.main.ra.model.Enum.OrderStatus;
 import com.main.ra.validator.OrderStatusValidate;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 
 import java.time.LocalDate;
@@ -24,39 +31,45 @@ public class OrderEntity {
     @Column(name = "order_id", nullable = false)
     private Long id;
 
-    @Generated(event = {EventType.INSERT,EventType.UPDATE})
-    @Column(name = "serial_number", length = 36)
+    @Generated(event = {EventType.INSERT})
+    @Size(max = 100,message = "{message.Max-Length-100}")
+    @Column(name = "serial_number")
     private String serialNumber;
 
+    @NotNull(message = "{message.NotNull}")
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Min(value = 0, message = "{message.Min-Price}")
     @Column(name = "total_price")
     private Double totalPrice;
 
     @Enumerated(value = EnumType.STRING)
-    /*@OrderStatusValidate(message = "{exception.OrderStatus.NotMatch}")*/
     @Column(name = "status")
     private OrderStatus status;
 
-    @Column(name = "note", length = 100)
+    @Size(max = 100, message = "{message.Max-Length-100}")
+    @Column(name = "note")
     private String note;
 
-    @Column(name = "receive_name", length = 100)
+    @Size(max = 100, message = "{message.Max-Length-100}")
+    @Column(name = "receive_name")
     private String receiveName;
 
+    @Size(max = 255, message = "{message.Max-Length-255}")
     @Column(name = "receive_address")
     private String receiveAddress;
 
-    @Column(name = "receive_phone", length = 15)
+    @Size(max = 15, message = "{message.Max-Length-15}")
+    @Column(name = "receive_phone")
     private String receivePhone;
 
-    @Generated(event = {EventType.INSERT,EventType.UPDATE})
-    @Column(name = "created_at")
+    @Generated(event = {EventType.INSERT})
+    @Column(name = "created_at",insertable = false,updatable = false)
     private LocalDate createdAt;
 
-    @Generated(event = {EventType.INSERT,EventType.UPDATE})
-    @Column(name = "received_at")
+    @Generated(event = {EventType.INSERT})
+    @Column(name = "received_at",insertable = false,updatable = false)
     private LocalDate receivedAt;
 
     @MapsId("userId")

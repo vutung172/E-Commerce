@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 public class ApiControlConfig {
     @Autowired
     private ListLoader loader;
-    private String[] WHITE_LIST_API;
-    private String[] ADMIN_LIST_API;
-    private String[] USER_LIST_API;
+    private final String[] WHITE_LIST_API;
+    private final String[] ADMIN_LIST_API;
+    private final String[] USER_LIST_API;
 
     public ApiControlConfig() {
         loader = new ListLoader();

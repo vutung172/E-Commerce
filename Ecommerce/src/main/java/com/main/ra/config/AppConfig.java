@@ -23,9 +23,8 @@ public class AppConfig {
     @Bean
     public ReloadableResourceBundleMessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasenames("classpath:validator-en","classpath:constant","classpath:error-messages");
+        messageSource.setBasenames("classpath:validator-en","classpath:constant","classpath:error-messages","classpath:api-list");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
-
 }
