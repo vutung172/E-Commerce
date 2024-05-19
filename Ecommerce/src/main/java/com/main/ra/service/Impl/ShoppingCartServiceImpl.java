@@ -34,7 +34,7 @@ public class ShoppingCartServiceImpl implements BaseService<ShoppingCartEntity,L
         return cartRepository.findAllByUserId(id);
     }
 
-    public ShoppingCartEntity addAll(Long userId, Long productId, Integer quantity) {
+    public ShoppingCartEntity addToCart(Long userId, Long productId, Integer quantity) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             ProductEntity productEntity = productRepository.findById(productId).orElse(null);
@@ -68,7 +68,7 @@ public class ShoppingCartServiceImpl implements BaseService<ShoppingCartEntity,L
                 List<ShoppingCartEntity> carts = cartRepository.findAllByUserId(userId);
                 carts.stream()
                         .filter(c -> c.getProductId().equals(productId))
-                        .forEach(c -> c.setOrderQuantity(c.getOrderQuantity()+quantity));
+                        .forEach(c -> c.setOrderQuantity(quantity));
                 return cartRepository.saveAll(carts).stream().filter(c -> c.getProductId().equals(productId)).findFirst().orElse(null);
             } else {
                 throw new BaseException("exception.ProductNotFound", HttpStatus.NOT_FOUND);

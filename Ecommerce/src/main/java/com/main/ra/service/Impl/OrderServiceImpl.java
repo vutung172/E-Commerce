@@ -27,7 +27,7 @@ public class OrderServiceImpl {
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
-    private ShoppingCartRepository cartRepository;
+    private ShoppingCartServiceImpl cartService;
     @Autowired
     private OrderDetailServiceImpl orderDetailService;
     @Autowired
@@ -53,7 +53,12 @@ public class OrderServiceImpl {
                             .mapToDouble(od -> (od.getProduct().getUnitPrice() * od.getOrderQuantity()))
                             .sum();
                     order.setTotalPrice(totalPrice);
-                    return update(order.getId(), order);
+                    OrderEntity updatedOrder = update(order.getId(), order);
+                    if (cartService.delete(userId)){
+                        return updatedOrder;
+                    } else {
+                        throw new BaseException("failure.AddToCart", HttpStatus.FORBIDDEN);
+                    }
                 } else {
                     throw new BaseException("exception.CartNotFound",HttpStatus.NOT_FOUND);
                 }

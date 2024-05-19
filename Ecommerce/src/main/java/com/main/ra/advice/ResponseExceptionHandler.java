@@ -1,6 +1,5 @@
 package com.main.ra.advice;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.main.ra.exception.BaseException;
 import com.main.ra.model.dto.response.MessageResponse;
 import org.springframework.http.HttpStatus;

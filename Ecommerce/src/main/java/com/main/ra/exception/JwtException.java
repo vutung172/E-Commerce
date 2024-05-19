@@ -1,8 +1,6 @@
 package com.main.ra.exception;
 
-import com.main.ra.model.dto.response.MessageResponse;
 import com.main.ra.util.MessageLoader;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import lombok.Setter;

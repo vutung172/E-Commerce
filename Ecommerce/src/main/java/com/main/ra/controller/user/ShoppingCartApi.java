@@ -57,7 +57,7 @@ public class ShoppingCartApi {
             @RequestHeader Long userId,
             @RequestBody PayloadRequest<String,String> payload
             ){
-        ShoppingCartEntity cartEntity = cartService.addAll(userId,
+        ShoppingCartEntity cartEntity = cartService.addToCart(userId,
                 Long.valueOf(payload.getPayload().get("productId")),
                 Integer.valueOf(payload.getPayload().get("quantity")));
         if (cartEntity != null){
