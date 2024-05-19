@@ -91,7 +91,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8088/api.myservice.com/v1/products/search?productName=sản ẩm a",
+							"raw": "http://localhost:8088/api.myservice.com/v1/products/search?searchName=product",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -105,8 +105,8 @@
 							],
 							"query": [
 								{
-									"key": "productName",
-									"value": "sản ẩm a"
+									"key": "searchName",
+									"value": "product"
 								}
 							]
 						}

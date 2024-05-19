@@ -128,6 +128,7 @@ CREATE TABLE orders(
     created_at      date                                                                   COMMENT '作成日付',
     received_at     date                                                                   COMMENT '配達予定日'
 );
+
 # orders FOREIGN KEY
 ALTER TABLE orders
     ADD CONSTRAINT fk_orders_user_id
@@ -151,7 +152,6 @@ BEGIN
     SET NEW.received_at = DATE_ADD(CURRENT_DATE, INTERVAL 4 DAY);
 END;
 // DELIMITER ;
-
 
 # order_details table
 CREATE TABLE order_details(
@@ -179,13 +179,7 @@ CREATE TABLE shopping_carts(
     shopping_cart_id bigint PRIMARY KEY AUTO_INCREMENT COMMENT 'ショッピングカート',
     product_id       bigint                             COMMENT '商品ID',
     user_id          bigint                             COMMENT 'ユーザーID',
-    order_quantity   int                                COMMENT '注文数量',
-    constraint fk_cart_product_id
-        FOREIGN KEY (product_id) REFERENCES products (product_id),
-    constraint fk_cart_user_id
-        FOREIGN KEY (user_id) REFERENCES users (user_id),
-    constraint chk_order_qty_carts
-        check (`order_quantity` > 0)
+    order_quantity   int                                COMMENT '注文数量'
 );
 # shopping carts FOREIGN KEY
 ALTER TABLE shopping_carts
