@@ -78,8 +78,6 @@ public class JwtTokenValidator {
     }
 
     private String base64Key(byte[] keys){
-        String base64Key = Base64.getEncoder().encodeToString(keys);
-        System.out.println("SECRET_KEY: " + base64Key);
-        return base64Key;
+        return Base64.getEncoder().encodeToString(keys);
     }
 }
